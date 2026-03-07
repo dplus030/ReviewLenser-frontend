@@ -115,7 +115,7 @@ const MapPanel = ({
   styles, isLight, t, lang, isMobile, mobileFullHeight, mapPosition, leftWidth,
   isDragging, setIsDragging,
   isPro, mapInputValue, setMapInputValue, setMapQuery, mapQuery,
-  onAnalyzePlace, places,
+  onAnalyzePlace, onAddToWishlist, isInWishlist, places,
   location, showRoute, useCurrentLoc, customLoc,
 }) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -203,11 +203,22 @@ const MapPanel = ({
           {/* Selected place tooltip */}
           {selectedPlace && MAPS_API_KEY && (
             <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 20, backgroundColor: styles.panel, border: `1px solid ${styles.border}`, borderRadius: '10px', padding: '8px 12px', maxWidth: '200px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
-              <div style={{ fontSize: '13px', fontWeight: 'bold', color: styles.text, marginBottom: '2px' }}>{selectedPlace.name}</div>
+              <div style={{ fontSize: '13px', fontWeight: 'bold', color: styles.text, marginBottom: '2px', paddingRight: '20px' }}>{selectedPlace.name}</div>
               {selectedPlace.rating && <div style={{ fontSize: '12px', color: styles.accent }}>{'★'.repeat(Math.round(selectedPlace.rating))} {selectedPlace.rating}</div>}
-              <button onClick={() => { onAnalyzePlace && onAnalyzePlace(); setSelectedPlace(null); }} style={{ marginTop: '6px', width: '100%', padding: '4px 0', borderRadius: '6px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                {lang === 'zh-TW' ? '🔍 透視評價' : '🔍 Analyze'}
-              </button>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+                <button onClick={() => { onAnalyzePlace && onAnalyzePlace(); setSelectedPlace(null); }} style={{ flex: 1, padding: '4px 0', borderRadius: '6px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  {lang === 'zh-TW' ? '透視評價' : 'Analyze'}
+                </button>
+                {onAddToWishlist && (
+                  <button
+                    onClick={() => { onAddToWishlist(selectedPlace); }}
+                    title={isInWishlist && isInWishlist(selectedPlace.place_id) ? (lang === 'zh-TW' ? '已收藏' : 'Saved') : (lang === 'zh-TW' ? '加入口袋名單' : 'Save')}
+                    style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isInWishlist && isInWishlist(selectedPlace.place_id) ? styles.accent : 'transparent', color: isInWishlist && isInWishlist(selectedPlace.place_id) ? '#fff' : styles.text, fontSize: '14px', cursor: 'pointer', lineHeight: 1 }}
+                  >
+                    {isInWishlist && isInWishlist(selectedPlace.place_id) ? '★' : '☆'}
+                  </button>
+                )}
+              </div>
               <button onClick={() => setSelectedPlace(null)} style={{ position: 'absolute', top: '6px', right: '6px', background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#888' : '#aaa', fontSize: '14px', lineHeight: 1 }}>✕</button>
             </div>
           )}

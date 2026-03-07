@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
+const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fontSize, setFontSize, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
   const [profileDraft, setProfileDraft] = useState(userProfile || '');
   const [saved, setSaved] = useState(false);
 
@@ -63,6 +63,20 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, map
               <option value="zh-TW">繁體中文</option>
               <option value="en">English</option>
             </select>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 'bold' }}>{t.fontSizeLabel}</span>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {['small', 'medium', 'large'].map((size) => (
+                <button
+                  key={size}
+                  onClick={() => { setFontSize(size); localStorage.setItem('fontSize', size); }}
+                  style={{ padding: '4px 10px', borderRadius: '8px', border: `1px solid ${fontSize === size ? styles.accent : styles.border}`, backgroundColor: fontSize === size ? styles.accent : 'transparent', color: fontSize === size ? '#fff' : styles.text, cursor: 'pointer', fontSize: size === 'small' ? '11px' : size === 'large' ? '15px' : '13px', fontWeight: fontSize === size ? 700 : 400 }}
+                >
+                  {t[`fontSize${size.charAt(0).toUpperCase() + size.slice(1)}`]}
+                </button>
+              ))}
+            </div>
           </div>
           {!isMobile && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

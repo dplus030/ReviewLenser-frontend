@@ -25,6 +25,7 @@ import SettingsModal from './components/SettingsModal';
 import { Icons } from './components/Icons';
 import LandingPage from './pages/LandingPage';
 import ConversationPanel from './components/ConversationPanel';
+import WishlistPanel from './components/WishlistPanel';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
@@ -51,6 +52,7 @@ function App() {
   const maxFreeUses = 10;
 
   const [theme, setTheme] = useState(() => getSaved('theme', 'dark'));
+  const [fontSize, setFontSize] = useState(() => getSaved('fontSize', 'medium'));
   const [mapPosition, setMapPosition] = useState(() => getSaved('mapPosition', 'left'));
   const [userProfile, setUserProfile] = useState(() => getSaved('userProfile', ''));
   const isLight = theme === 'light';
@@ -114,6 +116,10 @@ function App() {
   useEffect(() => { mapQueryRef.current = mapQuery; }, [mapQuery]);
   const [conversations, setConversations] = useState([]);
   const [showConvPanel, setShowConvPanel] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
+  const [wishlist, setWishlist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('wishlist') || '[]'); } catch { return []; }
+  });
 
   const [leftWidth, setLeftWidth] = useState(550);
   const [isDragging, setIsDragging] = useState(false);
@@ -327,6 +333,51 @@ function App() {
     setActiveConvId(null);
     setUserReq('');
     setQuestion('');
+  }, []);
+
+  const addToWishlist = useCallback((place) => {
+    const id = place.place_id || place.name;
+    setWishlist(prev => {
+      const exists = prev.find(p => p.id === id);
+      let next;
+      if (exists) {
+        next = prev.filter(p => p.id !== id);
+        showToast(t.wishlistToastRemoved, 'info');
+      } else {
+        next = [{ id, name: place.name, rating: place.rating || null, address: place.address || '', lat: place.lat, lng: place.lng, note: '', addedAt: new Date().toISOString() }, ...prev];
+        showToast(t.wishlistToastAdded, 'success');
+      }
+      localStorage.setItem('wishlist', JSON.stringify(next));
+      return next;
+    });
+  }, [showToast, t.wishlistToastRemoved, t.wishlistToastAdded]);
+
+  const removeFromWishlist = useCallback((id) => {
+    setWishlist(prev => {
+      const next = prev.filter(p => p.id !== id);
+      localStorage.setItem('wishlist', JSON.stringify(next));
+      return next;
+    });
+    showToast(t.wishlistToastRemoved, 'info');
+  }, [showToast, t.wishlistToastRemoved]);
+
+  const isInWishlist = useCallback((placeId) => {
+    return wishlist.some(p => p.id === placeId);
+  }, [wishlist]);
+
+  const updateWishlistNote = useCallback((id, note) => {
+    setWishlist(prev => {
+      const next = prev.map(p => p.id === id ? { ...p, note } : p);
+      localStorage.setItem('wishlist', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const handleWishlistAnalyze = useCallback((name) => {
+    setMode('evaluate');
+    setMapQuery(name);
+    setMapInputValue(name);
+    setPendingAnalyze(true);
   }, []);
 
   const handleToneChange = (e) => {
@@ -655,8 +706,10 @@ function App() {
     );
   }
 
+  const fontSizePx = fontSize === 'small' ? '13px' : fontSize === 'large' ? '17px' : '15px';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative', fontSize: fontSizePx }}>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
       {!isLight && !isMobile && (
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.35 }}>
@@ -690,6 +743,8 @@ function App() {
         setView={setView}
         onShowHistory={() => setShowConvPanel(true)}
         onNewChat={startNewChat}
+        onShowWishlist={() => setShowWishlist(true)}
+        wishlistCount={wishlist.length}
       />
       <ConversationPanel
         styles={styles}
@@ -706,6 +761,18 @@ function App() {
         setIsTempMode={setIsTempMode}
         currentUser={currentUser}
         showToast={showToast}
+      />
+      <WishlistPanel
+        styles={styles}
+        isLight={isLight}
+        t={t}
+        lang={lang}
+        isOpen={showWishlist}
+        onClose={() => setShowWishlist(false)}
+        wishlist={wishlist}
+        onRemove={removeFromWishlist}
+        onAnalyze={handleWishlistAnalyze}
+        onUpdateNote={updateWishlistNote}
       />
 
       {isMobile ? (
@@ -802,6 +869,8 @@ function App() {
                   setMobileTab('chat');
                   setPendingAnalyze(true);
                 }}
+                onAddToWishlist={addToWishlist}
+                isInWishlist={isInWishlist}
                 places={mapPlaces}
                 location={location}
                 showRoute={showRoute}
@@ -858,6 +927,8 @@ function App() {
                 setMapQuery(mapInputValue.trim() || mapQuery);
                 setPendingAnalyze(true);
               }}
+              onAddToWishlist={addToWishlist}
+              isInWishlist={isInWishlist}
               places={mapPlaces}
               location={location}
               showRoute={showRoute}
@@ -956,6 +1027,8 @@ function App() {
           setLang={setLang}
           theme={theme}
           setTheme={setTheme}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
           mapPosition={mapPosition}
           setMapPosition={setMapPosition}
           isPro={isPro}
