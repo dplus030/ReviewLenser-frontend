@@ -11,18 +11,18 @@ const MapPanel = ({
     const langCode = lang === 'zh-TW' ? 'zh-TW' : 'en';
     const mapBase = `https://maps.google.com/maps?hl=${langCode}&`;
     const safeQuery = mapQuery || '台灣';
-
     if (safeQuery === '台灣') return `${mapBase}q=${encodeURIComponent('台灣')}&z=7&output=embed`;
-    if (!showRoute) return `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
+    return `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
+  };
 
+  const getRouteInfo = () => {
+    if (!showRoute || !mapQuery || mapQuery === '台灣') return null;
     let startPoint = '';
     if (useCurrentLoc && location?.lat) startPoint = `${location.lat},${location.lng}`;
     else if (!useCurrentLoc && customLoc?.trim()) startPoint = customLoc.trim();
-
-    if (!startPoint || safeQuery === startPoint || safeQuery === `${location?.lat},${location?.lng}`) {
-      return `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
-    }
-    return `${mapBase}saddr=${encodeURIComponent(startPoint)}&daddr=${encodeURIComponent(safeQuery)}&output=embed`;
+    if (!startPoint) return { url: null };
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(startPoint)}&destination=${encodeURIComponent(mapQuery)}`;
+    return { url };
   };
 
   const isValidStoreName = mapQuery && mapQuery !== '台灣' && !/^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(mapQuery);
@@ -41,6 +41,21 @@ const MapPanel = ({
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
+          {(() => {
+            const route = getRouteInfo();
+            if (!route) return null;
+            if (!route.url) return (
+              <div style={{ position: 'absolute', top: '12px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, backgroundColor: 'rgba(255,180,0,0.92)', color: '#333', padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                ⚠️ {lang === 'zh-TW' ? '需開啟定位才能規劃路線' : 'Enable location to get directions'}
+              </div>
+            );
+            return (
+              <a href={route.url} target="_blank" rel="noopener noreferrer" style={{ position: 'absolute', top: '12px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, backgroundColor: styles.accent, color: '#fff', padding: '10px 20px', borderRadius: '24px', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(0,0,0,0.25)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
+                {lang === 'zh-TW' ? '在 Google Maps 開啟路線' : 'Open Directions in Google Maps'}
+              </a>
+            );
+          })()}
         </div>
 
         {!isPro && <AdBanner isLight={isLight} t={t} mode="bottom" />}
