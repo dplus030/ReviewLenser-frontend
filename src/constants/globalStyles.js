@@ -1,0 +1,30 @@
+export const GLOBAL_STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@700;900&display=swap');
+  body { font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif; }
+  .brand-font { font-family: 'Playfair Display', serif; font-weight: 900; }
+  .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-ai-reply { animation: fadeInDownAccelerate 0.4s cubic-bezier(0.2, 0, 0, 1) forwards; transform-origin: top; }
+  @keyframes fadeInDownAccelerate { 0% { opacity: 0; transform: translateY(-15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+  .gradient-text-light { background: linear-gradient(135deg, #111 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .gradient-text-dark { background: linear-gradient(135deg, #fff 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stars-sm { width: 1px; height: 1px; background: transparent; box-shadow: 1vw 5vh #fff, 8vw 3vh #fff, 15vw 9vh #fff, 22vw 2vh #fff, 29vw 7vh #fff, 36vw 4vh #fff, 43vw 9vh #fff, 50vw 1vh #fff, 57vw 7vh #fff, 64vw 4vh #fff, 71vw 2vh #fff, 78vw 8vh #fff, 85vw 5vh #fff, 92vw 3vh #fff, 99vw 7vh #fff, 3vw 18vh #fff, 10vw 14vh #fff, 17vw 20vh #fff, 24vw 16vh #fff, 31vw 22vh #fff, 38vw 12vh #fff, 45vw 19vh #fff, 52vw 15vh #fff, 59vw 21vh #fff, 66vw 13vh #fff, 73vw 18vh #fff, 80vw 11vh #fff, 87vw 17vh #fff, 94vw 23vh #fff, 6vw 30vh #fff, 13vw 27vh #fff, 20vw 32vh #fff, 27vw 28vh #fff, 34vw 34vh #fff, 41vw 26vh #fff, 48vw 31vh #fff, 55vw 29vh #fff, 62vw 35vh #fff, 69vw 27vh #fff, 76vw 33vh #fff, 83vw 25vh #fff, 90vw 31vh #fff, 97vw 28vh #fff, 4vw 45vh #fff, 11vw 42vh #fff, 18vw 48vh #fff, 25vw 41vh #fff, 32vw 46vh #fff, 39vw 43vh #fff, 46vw 50vh #fff, 53vw 44vh #fff, 60vw 49vh #fff, 67vw 42vh #fff, 74vw 47vh #fff, 81vw 40vh #fff, 88vw 45vh #fff, 95vw 43vh #fff, 7vw 62vh #fff, 14vw 58vh #fff, 21vw 65vh #fff; animation: twinkle 8s infinite alternate; }
+  .stars-md { width: 2px; height: 2px; background: transparent; border-radius: 50%; box-shadow: 5vw 55vh rgba(255,255,255,0.9), 19vw 72vh rgba(255,255,255,0.9), 34vw 60vh rgba(255,255,255,0.9), 49vw 78vh rgba(255,255,255,0.9), 63vw 54vh rgba(255,255,255,0.9), 78vw 68vh rgba(255,255,255,0.9), 92vw 75vh rgba(255,255,255,0.9), 12vw 85vh rgba(255,255,255,0.9), 27vw 92vh rgba(255,255,255,0.9), 42vw 80vh rgba(255,255,255,0.9), 57vw 95vh rgba(255,255,255,0.9), 72vw 82vh rgba(255,255,255,0.9), 86vw 90vh rgba(255,255,255,0.9), 2vw 38vh rgba(255,255,255,0.9), 16vw 52vh rgba(255,255,255,0.9), 31vw 47vh rgba(255,255,255,0.9), 45vw 36vh rgba(255,255,255,0.9), 60vw 68vh rgba(255,255,255,0.9), 74vw 22vh rgba(255,255,255,0.9), 89vw 58vh rgba(255,255,255,0.9); animation: twinkle 5s infinite alternate 1.5s; }
+  .stars-lg { width: 3px; height: 3px; background: transparent; border-radius: 50%; box-shadow: 15vw 35vh 0 0 #fff, 15vw 35vh 6px 2px rgba(180,220,255,0.45), 33vw 62vh 0 0 #fff, 33vw 62vh 6px 2px rgba(180,220,255,0.45), 52vw 22vh 0 0 #fff, 52vw 22vh 8px 2px rgba(200,230,255,0.5), 68vw 75vh 0 0 #fff, 68vw 75vh 6px 2px rgba(180,220,255,0.45), 82vw 40vh 0 0 #fff, 82vw 40vh 7px 2px rgba(200,230,255,0.4), 7vw 52vh 0 0 #fff, 7vw 52vh 6px 2px rgba(180,220,255,0.45), 44vw 88vh 0 0 #fff, 44vw 88vh 5px 2px rgba(180,220,255,0.4), 91vw 12vh 0 0 #fff, 91vw 12vh 8px 2px rgba(200,230,255,0.5), 25vw 15vh 0 0 #fff, 25vw 15vh 7px 2px rgba(180,220,255,0.45), 60vw 50vh 0 0 #fff, 60vw 50vh 6px 2px rgba(200,230,255,0.4); animation: twinkleBright 3s infinite alternate 0.8s; }
+  @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+  @keyframes twinkleBright { 0% { opacity: 0.5; filter: drop-shadow(0 0 2px rgba(150,200,255,0.6)); } 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(180,220,255,0.9)) drop-shadow(0 0 12px rgba(100,170,255,0.4)); } }
+  .sunray { position: absolute; width: 100%; height: 100%; background: conic-gradient(from 215deg at 88% -8%, transparent 0deg, rgba(255,210,80,0.16) 3deg, transparent 6deg, transparent 14deg, rgba(255,220,90,0.12) 17deg, transparent 20deg, transparent 29deg, rgba(255,215,85,0.18) 32deg, transparent 35deg, transparent 46deg, rgba(255,225,95,0.13) 49deg, transparent 52deg, transparent 62deg, rgba(255,218,88,0.15) 65deg, transparent 68deg, transparent 360deg); animation: sunPulse 14s ease-in-out infinite alternate; pointer-events: none; }
+  @keyframes sunPulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+  .rainbow-arc { position: absolute; width: 160vw; height: 160vw; border-radius: 50%; left: 50%; transform: translateX(-50%); top: -118vw; box-shadow: 0 0 0 10px rgba(239,68,68,0.025), 0 0 0 24px rgba(249,115,22,0.022), 0 0 0 38px rgba(234,179,8,0.022), 0 0 0 52px rgba(34,197,94,0.018), 0 0 0 66px rgba(96,165,250,0.022), 0 0 0 80px rgba(168,85,247,0.016); pointer-events: none; }
+  .cards-scroll::-webkit-scrollbar { display: none; }
+  @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+  @keyframes taglineFade { 0% { opacity: 0; transform: translateY(8px); } 15% { opacity: 1; transform: translateY(0); } 80% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-8px); } }
+  .tagline-anim { animation: taglineFade 3.8s ease-in-out forwards; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(20px) scale(0.95); } }
+  .toast-in { animation: toastIn 0.3s ease-out forwards; }
+  .toast-out { animation: toastOut 0.3s ease-in forwards; }
+`;
