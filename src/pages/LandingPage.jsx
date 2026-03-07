@@ -89,7 +89,7 @@ const LandingPage = ({
       </div>
 
       {/* Hero */}
-      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '40px', paddingBottom: isMobile ? '30px' : '40px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: '85vh', zIndex: 2 }}>
+      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '40px', paddingBottom: '24px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: 'calc(100vh - 70px)', zIndex: 2 }}>
         <div className="fade-in-up" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: isLight ? '#fef3c7' : '#001a33', color: styles.accent, borderRadius: '30px', fontSize: '13px', fontWeight: 'bold', marginBottom: '24px', border: `1px solid ${styles.accent}40` }}>
           <span style={{ width: '8px', height: '8px', backgroundColor: styles.accent, borderRadius: '50%', display: 'inline-block' }}></span>
           {t.badge}
@@ -106,7 +106,7 @@ const LandingPage = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '4px' }}><Icons.CheckGreen /><span style={{ color: styles.text, fontWeight: 'bold', fontSize: '1.15rem' }}>{t.hero3}</span></div>
         </div>
         <button className="fade-in-up delay-3" onClick={handleEnterApp} style={{ padding: '20px 60px', fontSize: '1.25rem', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '40px', cursor: 'pointer', fontWeight: '900', boxShadow: `0 10px 30px ${styles.accent}50` }}>{t.enter}</button>
-        <div className="fade-in-up delay-3" style={{ marginTop: '48px', opacity: 0.5, animation: 'bounce 2s infinite' }}>
+        <div className="fade-in-up delay-3" style={{ marginTop: 'auto', paddingTop: '24px', opacity: 0.5, animation: 'bounce 2s infinite' }}>
           <span style={{ display: 'block', fontSize: '12px', marginBottom: '10px', fontWeight: 'bold', letterSpacing: '2px' }}>SCROLL TO EXPLORE</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
         </div>
