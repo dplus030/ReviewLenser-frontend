@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, onClose }) => {
+const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
   const [profileDraft, setProfileDraft] = useState(userProfile || '');
   const [saved, setSaved] = useState(false);
 
@@ -31,6 +31,31 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, map
     >
       <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: '30px', borderRadius: '24px', width: '90%', maxWidth: '360px', maxHeight: '85vh', overflowY: 'auto', border: `1px solid ${styles.border}`, color: styles.text, display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <h3 style={{ marginTop: 0, marginBottom: '10px', textAlign: 'center' }}>{t.settings}</h3>
+        {isMobile && (
+          <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 'bold' }}>{t.theme}</span>
+              <button
+                onClick={() => { const newTheme = isLight ? 'dark' : 'light'; setTheme(newTheme); localStorage.setItem('theme', newTheme); }}
+                style={{ padding: '6px 14px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: styles.panel, color: styles.text, cursor: 'pointer', fontSize: '13px' }}
+              >
+                {isLight ? '🌙 ' + t.dark : '☀️ ' + t.light}
+              </button>
+            </div>
+            {!isPro && currentUser && (
+              <button
+                onClick={() => { handleUpgradeClick(); onClose(); }}
+                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}
+              >
+                {t.upgrade}
+              </button>
+            )}
+            {currentUser
+              ? <button onClick={() => { handleLogout(); onClose(); }} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: `1px solid ${styles.border}`, backgroundColor: 'transparent', color: styles.text, fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>{t.logout}</button>
+              : <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); onClose(); }} style={{ width: '100%', padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>{t.login}</button>
+            }
+          </div>
+        )}
         <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontWeight: 'bold' }}>{t.langLabel}</span>
@@ -39,15 +64,17 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, map
               <option value="en">English</option>
             </select>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: 'bold' }}>{t.theme}</span>
-            <button
-              onClick={() => { const newTheme = isLight ? 'dark' : 'light'; setTheme(newTheme); localStorage.setItem('theme', newTheme); }}
-              style={{ padding: '6px 12px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: styles.panel, color: styles.text, cursor: 'pointer', fontSize: '13px' }}
-            >
-              {isLight ? t.dark : t.light}
-            </button>
-          </div>
+          {!isMobile && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 'bold' }}>{t.theme}</span>
+              <button
+                onClick={() => { const newTheme = isLight ? 'dark' : 'light'; setTheme(newTheme); localStorage.setItem('theme', newTheme); }}
+                style={{ padding: '6px 12px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: styles.panel, color: styles.text, cursor: 'pointer', fontSize: '13px' }}
+              >
+                {isLight ? t.dark : t.light}
+              </button>
+            </div>
+          )}
         </div>
         <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

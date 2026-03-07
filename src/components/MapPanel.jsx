@@ -53,16 +53,10 @@ const MapPanel = ({
           />
           {(() => {
             const route = getRouteInfo();
-            if (!route) return null;
-            if (!route.url) return (
-              <div style={{ position: 'absolute', top: '12px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, backgroundColor: 'rgba(255,180,0,0.92)', color: '#333', padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
-                ⚠️ {lang === 'zh-TW' ? '需開啟定位才能規劃路線' : 'Enable location to get directions'}
-              </div>
-            );
+            if (!route || !route.url) return null;
             return (
-              <a href={route.url} target="_blank" rel="noopener noreferrer" style={{ position: 'absolute', top: '12px', left: '50%', transform: 'translateX(-50%)', zIndex: 20, backgroundColor: styles.accent, color: '#fff', padding: '10px 20px', borderRadius: '24px', fontSize: '13px', fontWeight: 'bold', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(0,0,0,0.25)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
-                {lang === 'zh-TW' ? '在 Google Maps 開啟路線' : 'Open Directions in Google Maps'}
+              <a href={route.url} target="_blank" rel="noopener noreferrer" title={lang === 'zh-TW' ? '在 Google Maps 開啟路線' : 'Open in Google Maps'} style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 20, backgroundColor: styles.accent, color: '#fff', width: '36px', height: '36px', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
               </a>
             );
           })()}

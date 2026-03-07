@@ -48,13 +48,16 @@ const AppHeader = ({ styles, isLight, theme, setTheme, t, isMobile, isPro, curre
           {t.upgrade}
         </button>
       )}
-      {currentUser
-        ? <button onClick={handleLogout} style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: 'transparent', color: styles.text, fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.logout}</button>
-        : <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); }} style={{ padding: '6px 16px', borderRadius: '20px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.login}</button>
-      }
-      <button onClick={() => { const n = isLight ? 'dark' : 'light'; setTheme(n); localStorage.setItem('theme', n); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, fontSize: '16px' }}>
-        {isLight ? '🌙' : '☀️'}
-      </button>
+      {!isMobile && (
+        currentUser
+          ? <button onClick={handleLogout} style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: 'transparent', color: styles.text, fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.logout}</button>
+          : <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); }} style={{ padding: '6px 16px', borderRadius: '20px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.login}</button>
+      )}
+      {!isMobile && (
+        <button onClick={() => { const n = isLight ? 'dark' : 'light'; setTheme(n); localStorage.setItem('theme', n); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, fontSize: '16px' }}>
+          {isLight ? '🌙' : '☀️'}
+        </button>
+      )}
       <button onClick={() => setView('settings')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, display: 'flex', alignItems: 'center' }}>
         <Icons.Settings />
       </button>

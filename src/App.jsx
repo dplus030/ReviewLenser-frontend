@@ -972,6 +972,12 @@ function App() {
           userProfile={userProfile}
           setUserProfile={setUserProfile}
           onClose={() => setView('chat')}
+          isMobile={isMobile}
+          currentUser={currentUser}
+          handleLogout={handleLogout}
+          setShowAuth={setShowAuth}
+          setIsSignUpMode={setIsSignUpMode}
+          handleUpgradeClick={handleUpgradeClick}
         />
       )}
       {showAuth && (
