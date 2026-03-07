@@ -66,7 +66,7 @@ const LandingPage = ({
       </div>
 
       {/* Navbar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 40px', backgroundColor: isLight ? 'rgba(255,255,255,0.7)' : 'rgba(10,10,12,0.7)', backdropFilter: 'blur(15px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}` }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 16px' : '15px 40px', backgroundColor: isLight ? 'rgba(255,255,255,0.7)' : 'rgba(10,10,12,0.7)', backdropFilter: 'blur(15px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
           <span className="brand-font" style={{ fontSize: '1.6rem' }}>ReviewLenser</span>
@@ -94,22 +94,22 @@ const LandingPage = ({
           <span style={{ width: '8px', height: '8px', backgroundColor: styles.accent, borderRadius: '50%', display: 'inline-block' }}></span>
           {t.badge}
         </div>
-        <h1 className={`fade-in-up delay-1 brand-font ${isLight ? 'gradient-text-light' : 'gradient-text-dark'}`} style={{ fontSize: isMobile ? '3.5rem' : '6rem', margin: '0 0 20px 0', letterSpacing: '-1.5px', lineHeight: 1.1, maxWidth: '900px' }}>ReviewLenser</h1>
-        <div className="fade-in-up delay-2" style={{ height: isMobile ? '3.2rem' : '3.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '36px', maxWidth: '800px', overflow: 'hidden' }}>
-          <h2 key={taglineKey} className="tagline-anim" style={{ fontSize: isMobile ? '1.3rem' : '1.8rem', fontWeight: '600', color: isLight ? '#444' : '#ccc', margin: 0, lineHeight: '1.5', textAlign: 'center' }}>
+        <h1 className={`fade-in-up delay-1 brand-font ${isLight ? 'gradient-text-light' : 'gradient-text-dark'}`} style={{ fontSize: isMobile ? 'clamp(2.2rem, 9vw, 3.5rem)' : '6rem', margin: isMobile ? '0 0 12px 0' : '0 0 20px 0', letterSpacing: '-1.5px', lineHeight: 1.1, maxWidth: '900px' }}>ReviewLenser</h1>
+        <div className="fade-in-up delay-2" style={{ minHeight: isMobile ? '4rem' : '3.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: isMobile ? '20px' : '36px', maxWidth: '800px' }}>
+          <h2 key={taglineKey} className="tagline-anim" style={{ fontSize: isMobile ? '1.1rem' : '1.8rem', fontWeight: '600', color: isLight ? '#444' : '#ccc', margin: 0, lineHeight: '1.5', textAlign: 'center' }}>
             {taglines[taglineIdx] || t.sub}
           </h2>
         </div>
-        <div className="fade-in-up delay-3" style={{ display: 'inline-flex', flexDirection: 'column', gap: '12px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,20,0.85)', backdropFilter: 'blur(10px)', padding: '24px 30px', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}`, borderLeft: `6px solid ${styles.accent}`, boxShadow: '0 15px 35px rgba(0,0,0,0.1)', textAlign: 'left', marginBottom: '36px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}><Icons.Cross /><span style={{ color: isLight ? '#555' : '#aaa', fontSize: '1.1rem' }}>{t.hero1}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}><Icons.Cross /><span style={{ color: isLight ? '#555' : '#aaa', fontSize: '1.1rem' }}>{t.hero2}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '4px' }}><Icons.CheckGreen /><span style={{ color: styles.text, fontWeight: 'bold', fontSize: '1.15rem' }}>{t.hero3}</span></div>
+        <div className="fade-in-up delay-3" style={{ display: 'inline-flex', flexDirection: 'column', gap: '10px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,20,0.85)', backdropFilter: 'blur(10px)', padding: isMobile ? '16px 18px' : '24px 30px', borderRadius: '20px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}`, borderLeft: `6px solid ${styles.accent}`, boxShadow: '0 15px 35px rgba(0,0,0,0.1)', textAlign: 'left', marginBottom: isMobile ? '20px' : '36px', width: isMobile ? '100%' : 'auto', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><Icons.Cross /><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{t.hero1}</span></div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><Icons.Cross /><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{t.hero2}</span></div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '4px' }}><Icons.CheckGreen /><span style={{ color: styles.text, fontWeight: 'bold', fontSize: isMobile ? '1rem' : '1.15rem', lineHeight: '1.4' }}>{t.hero3}</span></div>
         </div>
-        <button className="fade-in-up delay-3" onClick={handleEnterApp} style={{ padding: '20px 60px', fontSize: '1.25rem', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '40px', cursor: 'pointer', fontWeight: '900', boxShadow: `0 10px 30px ${styles.accent}50` }}>{t.enter}</button>
-        <div className="fade-in-up delay-3" style={{ marginTop: '32px', paddingTop: '0', opacity: 0.5, animation: 'bounce 2s infinite' }}>
+        <button className="fade-in-up delay-3" onClick={handleEnterApp} style={{ padding: isMobile ? '16px 0' : '20px 60px', width: isMobile ? '100%' : 'auto', fontSize: isMobile ? '1.1rem' : '1.25rem', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '40px', cursor: 'pointer', fontWeight: '900', boxShadow: `0 10px 30px ${styles.accent}50` }}>{t.enter}</button>
+        {!isMobile && <div className="fade-in-up delay-3" style={{ marginTop: '32px', paddingTop: '0', opacity: 0.5, animation: 'bounce 2s infinite' }}>
           <span style={{ display: 'block', fontSize: '12px', marginBottom: '10px', fontWeight: 'bold', letterSpacing: '2px' }}>SCROLL TO EXPLORE</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
-        </div>
+        </div>}
       </main>
 
       {/* Features Section */}
