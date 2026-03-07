@@ -9,7 +9,7 @@ const ControlBar = ({
   recommendCount, setRecommendCount,
   travelMode, setTravelMode, travelTime, handleTravelTimeChange,
   showRoute, setShowRoute,
-  getToneIcon, handleUpgradeClick, onToggleMap
+  getToneIcon, handleUpgradeClick, isMobile, onToggleMap
 }) => {
   const miniInput = {
     colorScheme: isLight ? 'light' : 'dark',
@@ -80,8 +80,8 @@ const ControlBar = ({
           <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
           <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
         </div>
-        <div style={{ display: 'flex', gap: '6px', flex: '0 1 auto', justifyContent: 'flex-end', minWidth: '220px' }}>
-          <div style={{ display: 'flex', gap: '6px', flex: '1 1 auto', minWidth: 0, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '6px', flex: isMobile ? '0 0 100%' : '0 1 auto', justifyContent: 'space-between', minWidth: isMobile ? '0' : '220px' }}>
+          <div style={{ display: 'flex', gap: '6px', flex: '1 1 auto', minWidth: 0, justifyContent: isMobile ? 'flex-start' : 'flex-end' }}>
             <div style={{ ...selectWrapperStyle, flex: toneMode === '自訂...' ? '0 0 110px' : '0 1 140px', minWidth: '100px' }}>
               <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}>{getToneIcon()}</div>
               <select value={toneMode} onChange={handleToneChange} style={{ ...pureSelectStyle, paddingLeft: '35px' }}>

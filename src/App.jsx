@@ -790,6 +790,7 @@ function App() {
             setShowRoute={setShowRoute}
             getToneIcon={getToneIcon}
             handleUpgradeClick={handleUpgradeClick}
+            isMobile={isMobile}
             onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
           />
 
