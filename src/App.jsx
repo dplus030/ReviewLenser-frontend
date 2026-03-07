@@ -34,7 +34,11 @@ function App() {
   const [lang, setLang] = useState(() => translations[savedLang] ? savedLang : 'zh-TW');
   const t = translations[lang] || translations['zh-TW'];
 
-  const [view, setView] = useState('landing');
+  const [view, setView] = useState(() => {
+    const saved = localStorage.getItem('lastView');
+    // 只有已登入的情況才能直接回到 chat（auth 狀態在 useEffect 確認）
+    return saved === 'chat' ? 'chat' : 'landing';
+  });
   const [showAuth, setShowAuth] = useState(false);
   const [showPay, setShowPay] = useState(false);
   const [billingCycle, setBillingCycle] = useState('yearly');
@@ -188,6 +192,18 @@ function App() {
     });
     return () => unsubscribe();
   }, [fetchUserProfile]);
+
+  // Persist view & guard: if no user after auth resolves, kick back to landing
+  useEffect(() => {
+    localStorage.setItem('lastView', view);
+  }, [view]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user && view === 'chat') setView('landing');
+    });
+    return () => unsubscribe();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleEnterApp = () => {
     if (!currentUser) setShowAuth(true);
@@ -968,10 +984,8 @@ function App() {
               setCategory={setCategory}
               customCategory={customCategory}
               setCustomCategory={setCustomCategory}
-              travelMode={travelMode}
-              setTravelMode={setTravelMode}
-              travelTime={travelTime}
-              handleTravelTimeChange={handleTravelTimeChange}
+              distanceKm={distanceKm}
+              setDistanceKm={setDistanceKm}
               showRoute={showRoute}
               setShowRoute={setShowRoute}
               getToneIcon={getToneIcon}
