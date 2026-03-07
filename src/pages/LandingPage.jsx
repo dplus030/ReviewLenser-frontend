@@ -89,7 +89,7 @@ const LandingPage = ({
       </div>
 
       {/* Hero */}
-      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '80px', paddingBottom: '48px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: 'calc(100vh - 70px)', zIndex: 2 }}>
+      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '48px', paddingBottom: '24px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: 'calc(100vh - 70px)', zIndex: 2 }}>
         <div className="fade-in-up" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: isLight ? '#fef3c7' : '#001a33', color: styles.accent, borderRadius: '30px', fontSize: '13px', fontWeight: 'bold', marginBottom: '24px', border: `1px solid ${styles.accent}40` }}>
           <span style={{ width: '8px', height: '8px', backgroundColor: styles.accent, borderRadius: '50%', display: 'inline-block' }}></span>
           {t.badge}
