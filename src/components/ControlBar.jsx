@@ -6,7 +6,6 @@ const ControlBar = ({
   toneMode, handleToneChange, customTone, setCustomTone, isPro,
   useCurrentLoc, setUseCurrentLoc, customLoc, setCustomLoc, setMapQuery, setMapInputValue,
   category, setCategory, customCategory, setCustomCategory,
-  recommendCount, setRecommendCount,
   travelMode, setTravelMode, travelTime, handleTravelTimeChange,
   showRoute, setShowRoute,
   getToneIcon, handleUpgradeClick, isMobile, onToggleMap
@@ -129,15 +128,6 @@ const ControlBar = ({
           {category === '自訂分類...' && (
             <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '70px', textAlign: 'center' }} />
           )}
-          <div style={{ ...selectWrapperStyle, flex: '1 1 auto', minWidth: '90px' }}>
-            <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.List /></div>
-            <select value={recommendCount} onChange={(e) => setRecommendCount(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '30px' }}>
-              <option value="1">{t.count1}</option>
-              <option value="3">{t.count3}</option>
-              <option value="5">{t.count5}</option>
-            </select>
-            <div style={{ position: 'absolute', right: '8px', pointerEvents: 'none', fontSize: '10px', opacity: 0.5 }}>▼</div>
-          </div>
           <div style={{ ...selectWrapperStyle, flex: '2 1 130px', padding: '4px 6px', gap: '2px', backgroundColor: isLight ? '#f5f5f5' : '#333' }}>
             <div style={{ display: 'flex', alignItems: 'center', color: isLight ? '#555' : '#aaa', flexShrink: 0 }}>{getTravelIcon()}</div>
             <select value={travelMode} onChange={(e) => { setTravelMode(e.target.value); localStorage.setItem('travelMode', e.target.value); }} style={{ ...pureSelectStyle, padding: '0 4px', flex: 1, minWidth: '40px' }}>
@@ -242,15 +232,6 @@ const ControlBar = ({
           {category === '自訂分類...' && (
             <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '70px', textAlign: 'center' }} />
           )}
-          <div style={{ ...selectWrapperStyle, flex: '1 1 auto', minWidth: '90px' }}>
-            <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.List /></div>
-            <select value={recommendCount} onChange={(e) => setRecommendCount(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '30px' }}>
-              <option value="1">{t.count1}</option>
-              <option value="3">{t.count3}</option>
-              <option value="5">{t.count5}</option>
-            </select>
-            <div style={{ position: 'absolute', right: '8px', pointerEvents: 'none', fontSize: '10px', opacity: 0.5 }}>▼</div>
-          </div>
           <div style={{ ...selectWrapperStyle, flex: '2 1 130px', padding: '4px 6px', gap: '2px', backgroundColor: isLight ? '#f5f5f5' : '#333' }}>
             <div style={{ display: 'flex', alignItems: 'center', color: isLight ? '#555' : '#aaa', flexShrink: 0 }}>{getTravelIcon()}</div>
             <select value={travelMode} onChange={(e) => { setTravelMode(e.target.value); localStorage.setItem('travelMode', e.target.value); }} style={{ ...pureSelectStyle, padding: '0 4px', flex: 1, minWidth: '40px' }}>

@@ -79,7 +79,7 @@ function App() {
 
   const [useCurrentLoc, setUseCurrentLoc] = useState(() => getSaved('useCurrentLoc', 'true') === 'true');
   const [customLoc, setCustomLoc] = useState(() => getSaved('customLoc', ''));
-  const [recommendCount, setRecommendCount] = useState(3);
+  const recommendCount = 3;
 
   const [location, setLocation] = useState(() => {
     try { const c = localStorage.getItem('lastGPS'); return c ? JSON.parse(c) : { lat: null, lng: null }; } catch { return { lat: null, lng: null }; }
@@ -741,8 +741,6 @@ function App() {
                   setCategory={setCategory}
                   customCategory={customCategory}
                   setCustomCategory={setCustomCategory}
-                  recommendCount={recommendCount}
-                  setRecommendCount={setRecommendCount}
                   travelMode={travelMode}
                   setTravelMode={setTravelMode}
                   travelTime={travelTime}
@@ -905,8 +903,6 @@ function App() {
               setCategory={setCategory}
               customCategory={customCategory}
               setCustomCategory={setCustomCategory}
-              recommendCount={recommendCount}
-              setRecommendCount={setRecommendCount}
               travelMode={travelMode}
               setTravelMode={setTravelMode}
               travelTime={travelTime}

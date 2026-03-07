@@ -8,7 +8,7 @@ const AppHeader = ({ styles, isLight, theme, setTheme, t, isMobile, isPro, curre
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => setView('landing')}>
           <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="brand-font" style={{ fontSize: '1.6rem' }}>ReviewLenser</span>
+            <span className="brand-font" style={{ fontSize: '1.6rem' }}>Lenser AI</span>
             {isPro && <span style={{ backgroundColor: styles.accent, color: 'white', padding: '2px 6px', borderRadius: '6px', fontSize: '12px', fontWeight: 900, letterSpacing: '1px' }}>PRO</span>}
           </div>
         </div>

@@ -69,7 +69,7 @@ const LandingPage = ({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 16px' : '15px 40px', backgroundColor: isLight ? 'rgba(255,255,255,0.7)' : 'rgba(10,10,12,0.7)', backdropFilter: 'blur(15px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: isMobile ? '30px' : '40px', height: isMobile ? '30px' : '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
-          {!isMobile && <span className="brand-font" style={{ fontSize: '1.6rem' }}>ReviewLenser</span>}
+          {!isMobile && <span className="brand-font" style={{ fontSize: '1.6rem' }}>Lenser AI</span>}
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem('lang', e.target.value); }} style={{ ...miniInput, backgroundColor: 'transparent', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
@@ -94,7 +94,7 @@ const LandingPage = ({
           <span style={{ width: '8px', height: '8px', backgroundColor: styles.accent, borderRadius: '50%', display: 'inline-block' }}></span>
           {t.badge}
         </div>
-        <h1 className={`fade-in-up delay-1 brand-font ${isLight ? 'gradient-text-light' : 'gradient-text-dark'}`} style={{ fontSize: isMobile ? 'clamp(2.2rem, 9vw, 3.5rem)' : '6rem', margin: isMobile ? '0 0 12px 0' : '0 0 20px 0', letterSpacing: '-1.5px', lineHeight: 1.1, maxWidth: '900px' }}>ReviewLenser</h1>
+        <h1 className={`fade-in-up delay-1 brand-font ${isLight ? 'gradient-text-light' : 'gradient-text-dark'}`} style={{ fontSize: isMobile ? 'clamp(2.2rem, 9vw, 3.5rem)' : '6rem', margin: isMobile ? '0 0 12px 0' : '0 0 20px 0', letterSpacing: '-1.5px', lineHeight: 1.1, maxWidth: '900px' }}>Lenser AI</h1>
         <div className="fade-in-up delay-2" style={{ minHeight: isMobile ? '4rem' : '3.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: isMobile ? '20px' : '36px', maxWidth: '800px' }}>
           <h2 key={taglineKey} className="tagline-anim" style={{ fontSize: isMobile ? '1.1rem' : '1.8rem', fontWeight: '600', color: isLight ? '#444' : '#ccc', margin: 0, lineHeight: '1.5', textAlign: 'center' }}>
             {taglines[taglineIdx] || t.sub}
@@ -192,7 +192,7 @@ const LandingPage = ({
       {/* Footer */}
       <footer style={{ flexShrink: 0, padding: '60px 20px', textAlign: 'center', color: isLight ? '#888' : '#555', fontSize: '14px', zIndex: 2 }}>
         <div style={{ color: styles.text, width: '40px', height: '40px', margin: '0 auto 20px' }}><Icons.Logo isLight={isLight} /></div>
-        <p className="brand-font">© 2026 ReviewLenser. Developed with vision.</p>
+        <p className="brand-font">© 2026 Lenser AI. Developed with vision.</p>
       </footer>
 
       {showAuth && (
