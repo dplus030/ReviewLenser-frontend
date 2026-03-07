@@ -14,7 +14,7 @@ const LandingPage = ({
   isSignUpMode, setIsSignUpMode, isLoggingIn,
   handleEmailAuth, handleGoogleLogin, handleEnterApp, handleUpgradeClick
 }) => {
-  const taglines = t.taglines || [];
+  const taglines = (isLight ? t.taglines : t.taglinesDark) || t.taglines || [];
   const [taglineIdx, setTaglineIdx] = useState(0);
   const [taglineKey, setTaglineKey] = useState(0);
   const featScrollRef = useRef(null);
