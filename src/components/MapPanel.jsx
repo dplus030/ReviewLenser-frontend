@@ -1,7 +1,7 @@
 import AdBanner from './AdBanner';
 
 const MapPanel = ({
-  styles, isLight, t, lang, isMobile, mapPosition, leftWidth,
+  styles, isLight, t, lang, isMobile, mobileFullHeight, mapPosition, leftWidth,
   isDragging, setIsDragging,
   isPro, mapInputValue, setMapInputValue, setMapQuery, mapQuery,
   onAnalyzePlace,
@@ -38,7 +38,7 @@ const MapPanel = ({
   const isValidStoreName = mapQuery && mapQuery !== '台灣' && !/^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(mapQuery);
 
   return (
-    <div style={{ width: isMobile ? '100%' : `${leftWidth}px`, height: isMobile ? '45vh' : '100%', padding: isMobile ? '10px' : '15px', display: 'flex', flexDirection: 'column', borderRight: isMobile || mapPosition === 'right' ? 'none' : `1px solid ${styles.border}`, borderLeft: isMobile || mapPosition === 'left' ? 'none' : `1px solid ${styles.border}`, borderBottom: isMobile ? `1px solid ${styles.border}` : 'none', boxSizing: 'border-box', flexShrink: 0, position: 'relative' }}>
+    <div style={{ width: isMobile ? '100%' : `${leftWidth}px`, height: isMobile ? (mobileFullHeight ? '100%' : '45vh') : '100%', padding: isMobile ? '10px' : '15px', display: 'flex', flexDirection: 'column', borderRight: isMobile || mapPosition === 'right' ? 'none' : `1px solid ${styles.border}`, borderLeft: isMobile || mapPosition === 'left' ? 'none' : `1px solid ${styles.border}`, borderBottom: isMobile ? `1px solid ${styles.border}` : 'none', boxSizing: 'border-box', flexShrink: 0, position: 'relative' }}>
       {isDragging && <div style={{ position: 'absolute', inset: 0, zIndex: 9999, cursor: 'col-resize' }} onClick={() => setIsDragging(false)} />}
       <div style={{ flex: 1, borderRadius: '12px', overflow: 'hidden', border: `1px solid ${styles.border}`, backgroundColor: styles.panel, position: 'relative', display: 'flex', flexDirection: 'column' }}>
 

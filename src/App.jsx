@@ -98,6 +98,7 @@ function App() {
 
   const [showMap, setShowMap] = useState(() => getSaved('showMap', 'true') === 'true');
   const [showRoute, setShowRoute] = useState(defaultShowRoute);
+  const [mobileTab, setMobileTab] = useState('chat'); // 'chat' | 'map'
 
   // Conversation history
   const [isTempMode, setIsTempMode] = useState(true);
@@ -713,122 +714,248 @@ function App() {
         showToast={showToast}
       />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : (mapPosition === 'left' ? 'row' : 'row-reverse'), overflow: 'hidden' }}>
-
-        {!showMap && !isPro && !isMobile && (
-          <div style={{ width: '60px', borderRight: mapPosition === 'left' ? `1px solid ${styles.border}` : 'none', borderLeft: mapPosition === 'right' ? `1px solid ${styles.border}` : 'none', backgroundColor: styles.panel, display: 'flex', flexDirection: 'column' }}>
-            <AdBanner isLight={isLight} t={t} mode="sidebar" />
+      {isMobile ? (
+        <>
+          <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {mobileTab === 'chat' && (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '10px', boxSizing: 'border-box', overflow: 'hidden' }}>
+                <ControlBar
+                  styles={styles}
+                  isLight={isLight}
+                  t={t}
+                  showMap={false}
+                  mode={mode}
+                  setMode={setMode}
+                  toneMode={toneMode}
+                  handleToneChange={handleToneChange}
+                  customTone={customTone}
+                  setCustomTone={setCustomTone}
+                  isPro={isPro}
+                  useCurrentLoc={useCurrentLoc}
+                  setUseCurrentLoc={setUseCurrentLoc}
+                  customLoc={customLoc}
+                  setCustomLoc={setCustomLoc}
+                  setMapQuery={setMapQuery}
+                  setMapInputValue={setMapInputValue}
+                  category={category}
+                  setCategory={setCategory}
+                  customCategory={customCategory}
+                  setCustomCategory={setCustomCategory}
+                  recommendCount={recommendCount}
+                  setRecommendCount={setRecommendCount}
+                  travelMode={travelMode}
+                  setTravelMode={setTravelMode}
+                  travelTime={travelTime}
+                  handleTravelTimeChange={handleTravelTimeChange}
+                  showRoute={showRoute}
+                  setShowRoute={setShowRoute}
+                  getToneIcon={getToneIcon}
+                  handleUpgradeClick={handleUpgradeClick}
+                  isMobile={true}
+                  onToggleMap={() => setMobileTab('map')}
+                />
+                <ChatArea
+                  messages={messages}
+                  styles={styles}
+                  isLight={isLight}
+                  showMap={false}
+                  loading={loading}
+                  mode={mode}
+                  t={t}
+                  isMobile={true}
+                  isSpeaking={isSpeaking}
+                  handleSpeak={handleSpeak}
+                  handleRegenerate={handleRegenerate}
+                  setMapQuery={setMapQuery}
+                  setMapInputValue={setMapInputValue}
+                  chatEndRef={chatEndRef}
+                />
+                <ChatInput
+                  styles={styles}
+                  isLight={isLight}
+                  isMobile={true}
+                  showMap={false}
+                  mode={mode}
+                  userReq={userReq}
+                  setUserReq={setUserReq}
+                  question={question}
+                  setQuestion={setQuestion}
+                  loading={loading}
+                  isListening={isListening}
+                  handleVoiceInput={handleVoiceInput}
+                  handleSend={handleSend}
+                  handleKeyDown={handleKeyDown}
+                  placeholder={getSafePlaceholder()}
+                />
+              </div>
+            )}
+            {mobileTab === 'map' && (
+              <MapPanel
+                styles={styles}
+                isLight={isLight}
+                t={t}
+                lang={lang}
+                isMobile={true}
+                mobileFullHeight={true}
+                mapPosition={mapPosition}
+                leftWidth={leftWidth}
+                isDragging={isDragging}
+                setIsDragging={setIsDragging}
+                isPro={isPro}
+                mapInputValue={mapInputValue}
+                setMapInputValue={setMapInputValue}
+                setMapQuery={setMapQuery}
+                mapQuery={mapQuery}
+                onAnalyzePlace={() => {
+                  setMode('evaluate');
+                  setMapQuery(mapInputValue.trim() || mapQuery);
+                  setMobileTab('chat');
+                  setPendingAnalyze(true);
+                }}
+                location={location}
+                showRoute={showRoute}
+                useCurrentLoc={useCurrentLoc}
+                customLoc={customLoc}
+              />
+            )}
           </div>
-        )}
+          {/* Mobile bottom tab bar */}
+          <div style={{ flexShrink: 0, display: 'flex', borderTop: `1px solid ${styles.border}`, backgroundColor: styles.panel, paddingBottom: 'env(safe-area-inset-bottom)' }}>
+            <button
+              onClick={() => setMobileTab('chat')}
+              style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'chat' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'chat' ? 'bold' : 'normal' }}
+            >
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>{lang === 'zh-TW' ? '對話' : 'Chat'}</span>
+            </button>
+            <button
+              onClick={() => setMobileTab('map')}
+              style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'map' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'map' ? 'bold' : 'normal' }}
+            >
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+              <span>{lang === 'zh-TW' ? '地圖' : 'Map'}</span>
+            </button>
+          </div>
+        </>
+      ) : (
+        <div style={{ flex: 1, display: 'flex', flexDirection: mapPosition === 'left' ? 'row' : 'row-reverse', overflow: 'hidden' }}>
 
-        {showMap && (
-          <MapPanel
-            styles={styles}
-            isLight={isLight}
-            t={t}
-            lang={lang}
-            isMobile={isMobile}
-            mapPosition={mapPosition}
-            leftWidth={leftWidth}
-            isDragging={isDragging}
-            setIsDragging={setIsDragging}
-            isPro={isPro}
-            mapInputValue={mapInputValue}
-            setMapInputValue={setMapInputValue}
-            setMapQuery={setMapQuery}
-            mapQuery={mapQuery}
-            onAnalyzePlace={() => {
-              setMode('evaluate');
-              setMapQuery(mapInputValue.trim() || mapQuery);
-              setPendingAnalyze(true);
-            }}
-            location={location}
-            showRoute={showRoute}
-            useCurrentLoc={useCurrentLoc}
-            customLoc={customLoc}
-          />
-        )}
+          {!showMap && !isPro && (
+            <div style={{ width: '60px', borderRight: mapPosition === 'left' ? `1px solid ${styles.border}` : 'none', borderLeft: mapPosition === 'right' ? `1px solid ${styles.border}` : 'none', backgroundColor: styles.panel, display: 'flex', flexDirection: 'column' }}>
+              <AdBanner isLight={isLight} t={t} mode="sidebar" />
+            </div>
+          )}
 
-        {showMap && !isMobile && (
-          <div
-            onMouseDown={(e) => { e.preventDefault(); setIsDragging(true); dragRef.current = { startX: e.clientX, startWidth: leftWidth }; }}
-            style={{ width: '5px', cursor: 'col-resize', backgroundColor: isDragging ? styles.accent : 'transparent', transition: 'background-color 0.2s', zIndex: 50 }}
-          />
-        )}
+          {showMap && (
+            <MapPanel
+              styles={styles}
+              isLight={isLight}
+              t={t}
+              lang={lang}
+              isMobile={false}
+              mapPosition={mapPosition}
+              leftWidth={leftWidth}
+              isDragging={isDragging}
+              setIsDragging={setIsDragging}
+              isPro={isPro}
+              mapInputValue={mapInputValue}
+              setMapInputValue={setMapInputValue}
+              setMapQuery={setMapQuery}
+              mapQuery={mapQuery}
+              onAnalyzePlace={() => {
+                setMode('evaluate');
+                setMapQuery(mapInputValue.trim() || mapQuery);
+                setPendingAnalyze(true);
+              }}
+              location={location}
+              showRoute={showRoute}
+              useCurrentLoc={useCurrentLoc}
+              customLoc={customLoc}
+            />
+          )}
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: isMobile ? '10px' : '15px', boxSizing: 'border-box', position: 'relative', overflow: 'hidden', alignItems: showMap ? 'stretch' : 'center' }}>
+          {showMap && (
+            <div
+              onMouseDown={(e) => { e.preventDefault(); setIsDragging(true); dragRef.current = { startX: e.clientX, startWidth: leftWidth }; }}
+              style={{ width: '5px', cursor: 'col-resize', backgroundColor: isDragging ? styles.accent : 'transparent', transition: 'background-color 0.2s', zIndex: 50 }}
+            />
+          )}
 
-          <ControlBar
-            styles={styles}
-            isLight={isLight}
-            t={t}
-            showMap={showMap}
-            mode={mode}
-            setMode={setMode}
-            toneMode={toneMode}
-            handleToneChange={handleToneChange}
-            customTone={customTone}
-            setCustomTone={setCustomTone}
-            isPro={isPro}
-            useCurrentLoc={useCurrentLoc}
-            setUseCurrentLoc={setUseCurrentLoc}
-            customLoc={customLoc}
-            setCustomLoc={setCustomLoc}
-            setMapQuery={setMapQuery}
-            setMapInputValue={setMapInputValue}
-            category={category}
-            setCategory={setCategory}
-            customCategory={customCategory}
-            setCustomCategory={setCustomCategory}
-            recommendCount={recommendCount}
-            setRecommendCount={setRecommendCount}
-            travelMode={travelMode}
-            setTravelMode={setTravelMode}
-            travelTime={travelTime}
-            handleTravelTimeChange={handleTravelTimeChange}
-            showRoute={showRoute}
-            setShowRoute={setShowRoute}
-            getToneIcon={getToneIcon}
-            handleUpgradeClick={handleUpgradeClick}
-            isMobile={isMobile}
-            onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
-          />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '15px', boxSizing: 'border-box', position: 'relative', overflow: 'hidden', alignItems: showMap ? 'stretch' : 'center' }}>
 
-          <ChatArea
-            messages={messages}
-            styles={styles}
-            isLight={isLight}
-            showMap={showMap}
-            loading={loading}
-            mode={mode}
-            t={t}
-            isSpeaking={isSpeaking}
-            handleSpeak={handleSpeak}
-            handleRegenerate={handleRegenerate}
-            setMapQuery={setMapQuery}
-            setMapInputValue={setMapInputValue}
-            chatEndRef={chatEndRef}
-          />
+            <ControlBar
+              styles={styles}
+              isLight={isLight}
+              t={t}
+              showMap={showMap}
+              mode={mode}
+              setMode={setMode}
+              toneMode={toneMode}
+              handleToneChange={handleToneChange}
+              customTone={customTone}
+              setCustomTone={setCustomTone}
+              isPro={isPro}
+              useCurrentLoc={useCurrentLoc}
+              setUseCurrentLoc={setUseCurrentLoc}
+              customLoc={customLoc}
+              setCustomLoc={setCustomLoc}
+              setMapQuery={setMapQuery}
+              setMapInputValue={setMapInputValue}
+              category={category}
+              setCategory={setCategory}
+              customCategory={customCategory}
+              setCustomCategory={setCustomCategory}
+              recommendCount={recommendCount}
+              setRecommendCount={setRecommendCount}
+              travelMode={travelMode}
+              setTravelMode={setTravelMode}
+              travelTime={travelTime}
+              handleTravelTimeChange={handleTravelTimeChange}
+              showRoute={showRoute}
+              setShowRoute={setShowRoute}
+              getToneIcon={getToneIcon}
+              handleUpgradeClick={handleUpgradeClick}
+              isMobile={false}
+              onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
+            />
 
-          <ChatInput
-            styles={styles}
-            isLight={isLight}
-            isMobile={isMobile}
-            showMap={showMap}
-            mode={mode}
-            userReq={userReq}
-            setUserReq={setUserReq}
-            question={question}
-            setQuestion={setQuestion}
-            loading={loading}
-            isListening={isListening}
-            handleVoiceInput={handleVoiceInput}
-            handleSend={handleSend}
-            handleKeyDown={handleKeyDown}
-            placeholder={getSafePlaceholder()}
-          />
+            <ChatArea
+              messages={messages}
+              styles={styles}
+              isLight={isLight}
+              showMap={showMap}
+              loading={loading}
+              mode={mode}
+              t={t}
+              isMobile={false}
+              isSpeaking={isSpeaking}
+              handleSpeak={handleSpeak}
+              handleRegenerate={handleRegenerate}
+              setMapQuery={setMapQuery}
+              setMapInputValue={setMapInputValue}
+              chatEndRef={chatEndRef}
+            />
+
+            <ChatInput
+              styles={styles}
+              isLight={isLight}
+              isMobile={false}
+              showMap={showMap}
+              mode={mode}
+              userReq={userReq}
+              setUserReq={setUserReq}
+              question={question}
+              setQuestion={setQuestion}
+              loading={loading}
+              isListening={isListening}
+              handleVoiceInput={handleVoiceInput}
+              handleSend={handleSend}
+              handleKeyDown={handleKeyDown}
+              placeholder={getSafePlaceholder()}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {view === 'settings' && (
         <SettingsModal
