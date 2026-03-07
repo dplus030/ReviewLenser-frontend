@@ -68,8 +68,8 @@ const LandingPage = ({
       {/* Navbar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '12px 16px' : '15px 40px', backgroundColor: isLight ? 'rgba(255,255,255,0.7)' : 'rgba(10,10,12,0.7)', backdropFilter: 'blur(15px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
-          <span className="brand-font" style={{ fontSize: '1.6rem' }}>ReviewLenser</span>
+          <div style={{ width: isMobile ? '30px' : '40px', height: isMobile ? '30px' : '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
+          {!isMobile && <span className="brand-font" style={{ fontSize: '1.6rem' }}>ReviewLenser</span>}
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem('lang', e.target.value); }} style={{ ...miniInput, backgroundColor: 'transparent', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
