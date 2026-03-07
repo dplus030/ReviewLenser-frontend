@@ -5,7 +5,7 @@ import AdBanner from './AdBanner';
 const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 // Inner component — needs useMap/useMapsLibrary hooks (must be child of Map)
-function MapInner({ mapQuery, places, location, useCurrentLoc, styles, onPinClick }) {
+function MapInner({ mapQuery, places, location, useCurrentLoc, styles, onPinClick, clickedLocation }) {
   const map = useMap();
   const placesLib = useMapsLibrary('places');
 
@@ -53,6 +53,13 @@ function MapInner({ mapQuery, places, location, useCurrentLoc, styles, onPinClic
       {useCurrentLoc && location?.lat && (
         <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
           <div style={{ width: 14, height: 14, borderRadius: '50%', backgroundColor: '#4285F4', border: '3px solid white', boxShadow: '0 2px 6px rgba(0,0,0,0.4)' }} />
+        </AdvancedMarker>
+      )}
+
+      {/* Clicked location marker */}
+      {clickedLocation && (
+        <AdvancedMarker position={clickedLocation}>
+          <div style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: '#EA4335', border: '3px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }} />
         </AdvancedMarker>
       )}
 
@@ -119,6 +126,12 @@ const MapPanel = ({
   location, showRoute, useCurrentLoc, customLoc,
 }) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [clickedLocation, setClickedLocation] = useState(null);
+
+  const handleMapClick = (event) => {
+    const { lat, lng } = event.detail.latLng;
+    setClickedLocation({ lat, lng });
+  };
 
   const getRouteStartPoint = () => {
     if (useCurrentLoc && location?.lat) return `${location.lat},${location.lng}`;
@@ -164,6 +177,7 @@ const MapPanel = ({
                 colorScheme={isLight ? 'LIGHT' : 'DARK'}
                 style={{ width: '100%', height: '100%' }}
                 gestureHandling="greedy"
+                onClick={handleMapClick}
                 disableDefaultUI={false}
                 mapTypeControl={false}
                 streetViewControl={false}
@@ -175,6 +189,7 @@ const MapPanel = ({
                   useCurrentLoc={useCurrentLoc}
                   styles={styles}
                   onPinClick={handlePinClick}
+                  clickedLocation={clickedLocation}
                 />
               </Map>
             </APIProvider>
