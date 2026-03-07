@@ -671,7 +671,7 @@ function App() {
           <div className="stars-lg" style={{ position: 'absolute', top: 0, left: 0 }} />
         </div>
       )}
-      {isLight && (
+      {isLight && !isMobile && (
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
           <div className="sunray" />
         </div>
