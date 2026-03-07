@@ -129,11 +129,13 @@ const LandingPage = ({
             </button>
             <div ref={featScrollRef} className="cards-scroll" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: '16px', paddingLeft: isMobile ? '20px' : '0', paddingRight: isMobile ? '20px' : '0', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
               {[
-                { icon: <Icons.Shield />, title: t.feat1Title, desc: t.feat1Desc },
-                { icon: <Icons.Brain />, title: t.feat2Title, desc: t.feat2Desc },
-                { icon: <Icons.Compass />, title: t.feat3Title, desc: t.feat3Desc },
-                { icon: <Icons.Briefcase />, title: t.feat4Title, desc: t.feat4Desc },
-                { icon: <Icons.Zap />, title: t.feat5Title, desc: t.feat5Desc }
+                { icon: <Icons.Heart />, title: t.feat1Title, desc: t.feat1Desc },
+                { icon: <Icons.Flame />, title: t.feat2Title, desc: t.feat2Desc },
+                { icon: <Icons.Shield />, title: t.feat3Title, desc: t.feat3Desc },
+                { icon: <Icons.Brain />, title: t.feat4Title, desc: t.feat4Desc },
+                { icon: <Icons.Compass />, title: t.feat5Title, desc: t.feat5Desc },
+                { icon: <Icons.Briefcase />, title: t.feat6Title, desc: t.feat6Desc },
+                { icon: <Icons.Zap />, title: t.feat7Title, desc: t.feat7Desc }
               ].map((feat, i) => (
                 <div key={i} style={{ flex: '0 0 min(85vw, 340px)', scrollSnapAlign: 'start', padding: '40px 30px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,25,0.75)', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.07)'}`, boxShadow: isLight ? '0 10px 40px rgba(0,0,0,0.06)' : '0 10px 40px rgba(0,0,0,0.5)', textAlign: 'left', backdropFilter: 'blur(12px)' }}>
                   <div style={{ width: '60px', height: '60px', backgroundColor: `${styles.accent}18`, color: styles.accent, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>{feat.icon}</div>
