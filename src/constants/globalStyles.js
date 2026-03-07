@@ -1,7 +1,7 @@
 export const GLOBAL_STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
   body { font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif; }
-  .brand-font { font-family: 'Playfair Display', serif; font-weight: 900; }
+  .brand-font { font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 900; letter-spacing: -0.5px; }
   .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
   .delay-1 { animation-delay: 0.2s; }
   .delay-2 { animation-delay: 0.4s; }

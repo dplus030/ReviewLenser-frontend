@@ -46,6 +46,7 @@ function App() {
 
   const [isPro, setIsPro] = useState(false);
   const isProRef = useRef(false);
+  const [isTrial, setIsTrial] = useState(false);
   const [usageCount, setUsageCount] = useState(0);
   const maxFreeUses = 10;
 
@@ -64,14 +65,15 @@ function App() {
   const savedCat = getSaved('defaultCategory', '找餐廳');
   const [defaultCategory] = useState(() => (savedCat === '無' || savedCat === 'None' || savedCat === '餐廳') ? '找餐廳' : savedCat);
   const [defaultTone] = useState(() => getSaved('defaultTone', '毒舌評論家'));
-  const [defaultShowRoute] = useState(() => getSaved('defaultShowRoute', 'true') === 'true');
 
   const [mode, setMode] = useState('recommend');
   const [category, setCategory] = useState(defaultCategory);
   const [toneMode, setToneMode] = useState(defaultTone);
   const [customTone, setCustomTone] = useState('');
-  const [travelMode, setTravelMode] = useState(() => getSaved('travelMode', 'walk'));
-  const [travelTime, setTravelTime] = useState(() => isNaN(Number(getSaved('travelTime', 10))) ? 10 : Number(getSaved('travelTime', 10)));
+  const [distanceKm, setDistanceKm] = useState(() => {
+    const saved = parseFloat(getSaved('distanceKm', '1'));
+    return isNaN(saved) ? 1 : saved;
+  });
 
   const [customCategory, setCustomCategory] = useState('');
   const [userReq, setUserReq] = useState('');
@@ -85,6 +87,7 @@ function App() {
     try { const c = localStorage.getItem('lastGPS'); return c ? JSON.parse(c) : { lat: null, lng: null }; } catch { return { lat: null, lng: null }; }
   });
   const [messages, setMessages] = useState([]);
+  const [mapPlaces, setMapPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [mapQuery, setMapQuery] = useState(() => {
@@ -97,7 +100,7 @@ function App() {
   const [pendingAnalyze, setPendingAnalyze] = useState(false);
 
   const [showMap, setShowMap] = useState(() => getSaved('showMap', 'true') === 'true');
-  const [showRoute, setShowRoute] = useState(defaultShowRoute);
+  const [showRoute, setShowRoute] = useState(() => getSaved('showRoute', 'true') === 'true');
   const [mobileTab, setMobileTab] = useState('chat'); // 'chat' | 'map'
 
   // Conversation history
@@ -160,6 +163,7 @@ function App() {
         const wasNotPro = !isProRef.current;
         isProRef.current = data.is_pro || false;
         setIsPro(data.is_pro || false);
+        setIsTrial(data.is_trial || false);
         setUsageCount(data.usage_count || 0);
         if (wasNotPro && data.is_pro && !localStorage.getItem('proWelcomeShown')) {
           showToast(t.proUpgradeToast, 'success');
@@ -287,7 +291,7 @@ function App() {
       messages.length !== lastSavedLengthRef.current
     ) {
       lastSavedLengthRef.current = messages.length;
-      const convSettings = { mode, category, mapQuery, travelMode, travelTime, toneMode };
+      const convSettings = { mode, category, mapQuery, distanceKm, toneMode };
       saveConversation(messages, activeConvIdRef.current, convSettings).then(id => {
         if (id && id !== activeConvIdRef.current) setActiveConvId(id);
       });
@@ -313,8 +317,7 @@ function App() {
       if (conv.settings.mode) setMode(conv.settings.mode);
       if (conv.settings.category) setCategory(conv.settings.category);
       if (conv.settings.mapQuery) { setMapQuery(conv.settings.mapQuery); setMapInputValue(conv.settings.mapQuery); }
-      if (conv.settings.travelMode) setTravelMode(conv.settings.travelMode);
-      if (conv.settings.travelTime) setTravelTime(conv.settings.travelTime);
+      if (conv.settings.distanceKm) setDistanceKm(conv.settings.distanceKm);
       if (conv.settings.toneMode) setToneMode(conv.settings.toneMode);
     }
   }, []);
@@ -332,14 +335,6 @@ function App() {
     setToneMode(val);
   };
 
-  const handleTravelTimeChange = (e) => {
-    let val = parseInt(e.target.value, 10);
-    if (isNaN(val)) val = 10;
-    if (val > 40) val = 40;
-    if (val < 1) val = 1;
-    setTravelTime(val);
-    localStorage.setItem('travelTime', val.toString());
-  };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -526,9 +521,8 @@ function App() {
       finalQuestion = lang === 'zh-TW' ? "請給予這家店的評價總結" : "Please provide a summary of reviews for this store.";
     }
 
-    const safeTravelText = t[travelMode] || t.walk;
     const currentSettingsTags = mode === 'recommend'
-      ? [t.tabRec, useCurrentLoc ? t.locCurr : (customLoc || t.locCust), getCatText(category), `${safeTravelText} ${travelTime} ${t.mins}`, getToneText(toneMode)]
+      ? [t.tabRec, useCurrentLoc ? t.locCurr : (customLoc || t.locCust), getCatText(category), `${distanceKm}km`, getToneText(toneMode)]
       : [t.tabEval, getToneText(toneMode)];
 
     const displayContent = mode === 'recommend'
@@ -542,7 +536,7 @@ function App() {
 
     let enhancedReq = targetReq;
     if (mode === 'recommend' && useCurrentLoc) {
-      enhancedReq += ` (系統強制限制：必須是${travelTime}分鐘${safeTravelText}內能抵達的店，嚴禁推薦外縣市)`;
+      enhancedReq += ` (系統強制限制：必須是${distanceKm}公里半徑內的店，嚴禁推薦外縣市)`;
     }
 
     try {
@@ -564,8 +558,7 @@ function App() {
           custom_location: customLoc,
           tone_mode: toneMode === '自訂...' ? customTone : toneMode,
           ui_lang: lang,
-          travel_mode: travelMode,
-          travel_time: travelTime,
+          radius_km: distanceKm,
           user_profile: isPro && userProfile ? userProfile : ''
         }),
       });
@@ -579,7 +572,8 @@ function App() {
           setMapQuery(data.map_keyword);
           setMapInputValue(data.map_keyword);
         }
-        if (!isPro) setUsageCount(prev => prev + 1);
+        if (data.places && data.places.length > 0) setMapPlaces(data.places);
+        if (!isPro && !isTrial) setUsageCount(prev => prev + 1);
       } else {
         setMessages(prev => [...prev, { role: 'ai', content: data.error || "Unknown Error", isNew: true }]);
       }
@@ -741,10 +735,8 @@ function App() {
                   setCategory={setCategory}
                   customCategory={customCategory}
                   setCustomCategory={setCustomCategory}
-                  travelMode={travelMode}
-                  setTravelMode={setTravelMode}
-                  travelTime={travelTime}
-                  handleTravelTimeChange={handleTravelTimeChange}
+                  distanceKm={distanceKm}
+                  setDistanceKm={setDistanceKm}
                   showRoute={showRoute}
                   setShowRoute={setShowRoute}
                   getToneIcon={getToneIcon}
@@ -810,6 +802,7 @@ function App() {
                   setMobileTab('chat');
                   setPendingAnalyze(true);
                 }}
+                places={mapPlaces}
                 location={location}
                 showRoute={showRoute}
                 useCurrentLoc={useCurrentLoc}
@@ -865,6 +858,7 @@ function App() {
                 setMapQuery(mapInputValue.trim() || mapQuery);
                 setPendingAnalyze(true);
               }}
+              places={mapPlaces}
               location={location}
               showRoute={showRoute}
               useCurrentLoc={useCurrentLoc}

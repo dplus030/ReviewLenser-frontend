@@ -3,7 +3,7 @@ import { Icons } from './Icons';
 
 const ChatInput = ({ styles, isLight, isMobile, showMap, mode, userReq, setUserReq, question, setQuestion, loading, isListening, handleVoiceInput, handleSend, handleKeyDown, placeholder }) => (
   <div style={isMobile ? { flexShrink: 0, padding: '8px 0 4px' } : { position: 'absolute', bottom: '20px', left: 0, right: 0, padding: '0 20px', display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-    <div style={{ display: 'flex', gap: '8px', width: '100%', maxWidth: showMap ? '100%' : '800px', backgroundColor: isLight ? 'rgba(255,255,255,0.92)' : 'rgba(34,34,34,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', padding: '6px 8px 6px 16px', borderRadius: '24px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)', border: `1px solid ${styles.border}`, boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', gap: '8px', width: '100%', maxWidth: showMap ? '100%' : '1000px', backgroundColor: isLight ? 'rgba(255,255,255,0.92)' : 'rgba(34,34,34,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', padding: '6px 8px 6px 16px', borderRadius: '24px', boxShadow: '0 8px 30px rgba(0,0,0,0.15)', border: `1px solid ${styles.border}`, boxSizing: 'border-box' }}>
       <input
         placeholder={placeholder}
         value={mode === 'recommend' ? userReq : question}

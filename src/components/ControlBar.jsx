@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Icons } from './Icons';
 
+const DISTANCE_STEPS = [0.3, 0.5, 1, 2, 3, 5, 8, 10];
+
 const ControlBar = ({
   styles, isLight, t, showMap, mode, setMode,
   toneMode, handleToneChange, customTone, setCustomTone, isPro,
   useCurrentLoc, setUseCurrentLoc, customLoc, setCustomLoc, setMapQuery, setMapInputValue,
   category, setCategory, customCategory, setCustomCategory,
-  travelMode, setTravelMode, travelTime, handleTravelTimeChange,
+  distanceKm, setDistanceKm,
   showRoute, setShowRoute,
   getToneIcon, handleUpgradeClick, isMobile, onToggleMap
 }) => {
@@ -66,17 +68,24 @@ const ControlBar = ({
     transition: '0.2s'
   });
 
-  const getTravelIcon = () => {
-    if (travelMode === 'walk') return <Icons.Walk />;
-    if (travelMode === 'scooter') return <Icons.Scooter />;
-    return <Icons.Car />;
+  const stepIdx = DISTANCE_STEPS.indexOf(distanceKm) < 0 ? 2 : DISTANCE_STEPS.indexOf(distanceKm);
+
+  const handleLocToggle = () => {
+    if (useCurrentLoc) {
+      if (!isPro) { handleUpgradeClick(); return; }
+      setUseCurrentLoc(false);
+      localStorage.setItem('useCurrentLoc', 'false');
+    } else {
+      setUseCurrentLoc(true);
+      localStorage.setItem('useCurrentLoc', 'true');
+    }
   };
 
   const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const settingsPanel = (
     <>
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: mode === 'recommend' ? '8px' : '0' }}>
         <div style={{ ...selectWrapperStyle, flex: toneMode === '自訂...' ? '0 0 110px' : '1 1 auto', minWidth: '100px' }}>
           <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}>{getToneIcon()}</div>
           <select value={toneMode} onChange={handleToneChange} style={{ ...pureSelectStyle, paddingLeft: '35px' }}>
@@ -101,18 +110,26 @@ const ControlBar = ({
 
       {mode === 'recommend' && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
-            <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              <input type="radio" checked={useCurrentLoc} onChange={() => { setUseCurrentLoc(true); localStorage.setItem('useCurrentLoc', 'true'); }} style={{ marginRight: '4px' }} /> {t.locCurr}
-            </label>
-            <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap', opacity: isPro ? 1 : 0.6 }} onClick={(e) => { if (!isPro) handleUpgradeClick(e); }}>
-              <input type="radio" checked={!useCurrentLoc} onChange={() => { if (isPro) { setUseCurrentLoc(false); localStorage.setItem('useCurrentLoc', 'false'); } }} style={{ marginRight: '4px' }} disabled={!isPro} />
-              {!isPro && <span style={{ marginRight: '2px', display: 'flex', alignItems: 'center' }}><Icons.Lock /></span>} {t.locCust}
-            </label>
-          </div>
+          {/* Location toggle button */}
+          <button
+            onClick={handleLocToggle}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: useCurrentLoc ? styles.accent : 'transparent', color: useCurrentLoc ? '#fff' : styles.text, cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', flexShrink: 0, whiteSpace: 'nowrap' }}
+          >
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {useCurrentLoc
+                ? <><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></>
+                : <><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>
+              }
+            </svg>
+            {useCurrentLoc ? t.locCurr : t.locCust}
+            {!isPro && !useCurrentLoc && <Icons.Lock />}
+          </button>
+
           {!useCurrentLoc && (
             <input placeholder={t.locCustPh} value={customLoc} onChange={(e) => { setCustomLoc(e.target.value); localStorage.setItem('customLoc', e.target.value); }} onBlur={(e) => { if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } }} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } } }} style={{ ...miniInput, flex: '1 1 100px' }} />
           )}
+
+          {/* Category */}
           <div style={{ ...selectWrapperStyle, flex: '1 1 auto', minWidth: '100px' }}>
             <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.Tag /></div>
             <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '32px' }}>
@@ -128,15 +145,24 @@ const ControlBar = ({
           {category === '自訂分類...' && (
             <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '70px', textAlign: 'center' }} />
           )}
-          <div style={{ ...selectWrapperStyle, flex: '2 1 130px', padding: '4px 6px', gap: '2px', backgroundColor: isLight ? '#f5f5f5' : '#333' }}>
-            <div style={{ display: 'flex', alignItems: 'center', color: isLight ? '#555' : '#aaa', flexShrink: 0 }}>{getTravelIcon()}</div>
-            <select value={travelMode} onChange={(e) => { setTravelMode(e.target.value); localStorage.setItem('travelMode', e.target.value); }} style={{ ...pureSelectStyle, padding: '0 4px', flex: 1, minWidth: '40px' }}>
-              <option value="walk">{t.walk}</option>
-              <option value="scooter">{t.scooter}</option>
-              <option value="drive">{t.drive}</option>
-            </select>
-            <input type="number" value={travelTime} min="1" max="40" onChange={handleTravelTimeChange} style={{ width: '30px', padding: '2px 0', textAlign: 'center', border: 'none', borderRadius: '4px', backgroundColor: isLight ? '#fff' : '#222', color: 'inherit', outline: 'none', fontSize: '13px', flexShrink: 0 }} />
-            <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', flexShrink: 0, paddingLeft: '4px' }}>{t.mins}</span>
+
+          {/* Distance slider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '2 1 130px', padding: '4px 10px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isLight ? '#f5f5f5' : '#333', boxSizing: 'border-box' }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke={isLight ? '#555' : '#aaa'} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <input
+              type="range"
+              min="0"
+              max={DISTANCE_STEPS.length - 1}
+              step="1"
+              value={stepIdx}
+              onChange={(e) => {
+                const km = DISTANCE_STEPS[parseInt(e.target.value)];
+                setDistanceKm(km);
+                localStorage.setItem('distanceKm', String(km));
+              }}
+              style={{ flex: 1, accentColor: styles.accent, cursor: 'pointer', margin: 0 }}
+            />
+            <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', minWidth: '36px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
           </div>
         </div>
       )}
@@ -169,7 +195,7 @@ const ControlBar = ({
   }
 
   return (
-    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '800px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1000px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: mode === 'recommend' ? '10px' : '0' }}>
         <div style={{ display: 'flex', gap: '4px', flex: '1 1 auto', minWidth: '160px' }}>
           <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
@@ -205,18 +231,26 @@ const ControlBar = ({
 
       {mode === 'recommend' && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', width: '100%' }}>
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
-            <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              <input type="radio" checked={useCurrentLoc} onChange={() => { setUseCurrentLoc(true); localStorage.setItem('useCurrentLoc', 'true'); }} style={{ marginRight: '4px' }} /> {t.locCurr}
-            </label>
-            <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', cursor: 'pointer', whiteSpace: 'nowrap', opacity: isPro ? 1 : 0.6 }} onClick={(e) => { if (!isPro) handleUpgradeClick(e); }}>
-              <input type="radio" checked={!useCurrentLoc} onChange={() => { if (isPro) { setUseCurrentLoc(false); localStorage.setItem('useCurrentLoc', 'false'); } }} style={{ marginRight: '4px' }} disabled={!isPro} />
-              {!isPro && <span style={{ marginRight: '2px', display: 'flex', alignItems: 'center' }}><Icons.Lock /></span>} {t.locCust}
-            </label>
-          </div>
+          {/* Location toggle */}
+          <button
+            onClick={handleLocToggle}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: useCurrentLoc ? styles.accent : 'transparent', color: useCurrentLoc ? '#fff' : styles.text, cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', flexShrink: 0, whiteSpace: 'nowrap' }}
+          >
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {useCurrentLoc
+                ? <><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></>
+                : <><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>
+              }
+            </svg>
+            {useCurrentLoc ? t.locCurr : t.locCust}
+            {!isPro && !useCurrentLoc && <Icons.Lock />}
+          </button>
+
           {!useCurrentLoc && (
             <input placeholder={t.locCustPh} value={customLoc} onChange={(e) => { setCustomLoc(e.target.value); localStorage.setItem('customLoc', e.target.value); }} onBlur={(e) => { if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } }} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } } }} style={{ ...miniInput, flex: '1 1 100px' }} />
           )}
+
+          {/* Category */}
           <div style={{ ...selectWrapperStyle, flex: '1 1 auto', minWidth: '100px' }}>
             <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.Tag /></div>
             <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '32px' }}>
@@ -232,15 +266,24 @@ const ControlBar = ({
           {category === '自訂分類...' && (
             <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '70px', textAlign: 'center' }} />
           )}
-          <div style={{ ...selectWrapperStyle, flex: '2 1 130px', padding: '4px 6px', gap: '2px', backgroundColor: isLight ? '#f5f5f5' : '#333' }}>
-            <div style={{ display: 'flex', alignItems: 'center', color: isLight ? '#555' : '#aaa', flexShrink: 0 }}>{getTravelIcon()}</div>
-            <select value={travelMode} onChange={(e) => { setTravelMode(e.target.value); localStorage.setItem('travelMode', e.target.value); }} style={{ ...pureSelectStyle, padding: '0 4px', flex: 1, minWidth: '40px' }}>
-              <option value="walk">{t.walk}</option>
-              <option value="scooter">{t.scooter}</option>
-              <option value="drive">{t.drive}</option>
-            </select>
-            <input type="number" value={travelTime} min="1" max="40" onChange={handleTravelTimeChange} style={{ width: '30px', padding: '2px 0', textAlign: 'center', border: 'none', borderRadius: '4px', backgroundColor: isLight ? '#fff' : '#222', color: 'inherit', outline: 'none', fontSize: '13px', flexShrink: 0 }} />
-            <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', flexShrink: 0, paddingLeft: '4px' }}>{t.mins}</span>
+
+          {/* Distance slider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '2 1 130px', padding: '4px 10px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isLight ? '#f5f5f5' : '#333', boxSizing: 'border-box' }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke={isLight ? '#555' : '#aaa'} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <input
+              type="range"
+              min="0"
+              max={DISTANCE_STEPS.length - 1}
+              step="1"
+              value={stepIdx}
+              onChange={(e) => {
+                const km = DISTANCE_STEPS[parseInt(e.target.value)];
+                setDistanceKm(km);
+                localStorage.setItem('distanceKm', String(km));
+              }}
+              style={{ flex: 1, accentColor: styles.accent, cursor: 'pointer', margin: 0 }}
+            />
+            <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', minWidth: '36px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
           </div>
         </div>
       )}
