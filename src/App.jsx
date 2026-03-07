@@ -729,7 +729,7 @@ function App() {
   const fontSizePx = fontSize === 'small' ? '13px' : fontSize === 'large' ? '17px' : '15px';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative', fontSize: fontSizePx }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative', fontSize: fontSizePx }}>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
       {!isLight && !isMobile && (
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.35 }}>
