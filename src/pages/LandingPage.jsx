@@ -165,6 +165,7 @@ const LandingPage = ({
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#ff4d4d' }}>❌</span> <b>{t.basicFeat2}</b></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#ff4d4d' }}>❌</span> <b>{t.basicFeat3}</b></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#ff4d4d' }}>❌</span> {t.basicFeat4}</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#ff4d4d' }}>❌</span> <b>{t.basicFeat5}</b></li>
                 <li style={{ borderTop: `1px dashed ${isLight ? '#ddd' : '#444'}`, margin: '10px 0' }}></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> {t.basicInc1}</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> {t.basicInc2}</li>
@@ -182,6 +183,7 @@ const LandingPage = ({
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat2}</b></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat3}</b></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat4}</b></li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat5}</b></li>
                 <li style={{ borderTop: `1px dashed ${isLight ? '#cce0ff' : '#1e3a8a'}`, margin: '10px 0' }}></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> {t.proInc1}</li>
               </ul>

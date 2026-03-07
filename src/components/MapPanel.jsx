@@ -9,6 +9,31 @@ function MapInner({ mapQuery, places, location, useCurrentLoc, styles, onPinClic
   const map = useMap();
   const placesLib = useMapsLibrary('places');
 
+  // Handle POI (store/place) clicks on the map — get details and trigger selection
+  useEffect(() => {
+    if (!map || !placesLib) return;
+    const listener = map.addListener('click', (event) => {
+      if (!event.placeId) return;
+      event.stop(); // prevent default Google info window
+      const svc = new placesLib.PlacesService(map);
+      svc.getDetails(
+        { placeId: event.placeId, fields: ['name', 'geometry', 'rating', 'place_id'] },
+        (result, status) => {
+          if (status === placesLib.PlacesServiceStatus.OK && result) {
+            onPinClick({
+              place_id: result.place_id,
+              name: result.name,
+              lat: result.geometry.location.lat(),
+              lng: result.geometry.location.lng(),
+              rating: result.rating,
+            });
+          }
+        }
+      );
+    });
+    return () => listener.remove();
+  }, [map, placesLib, onPinClick]);
+
   // Fit/center on recommended places
   useEffect(() => {
     if (!map || !places || places.length === 0) return;
@@ -129,6 +154,7 @@ const MapPanel = ({
   const [clickedLocation, setClickedLocation] = useState(null);
 
   const handleMapClick = (event) => {
+    if (event.detail?.placeId) return; // POI clicks handled in MapInner
     const { lat, lng } = event.detail.latLng;
     setClickedLocation({ lat, lng });
   };
@@ -169,7 +195,7 @@ const MapPanel = ({
         {/* Map area */}
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
           {MAPS_API_KEY ? (
-            <APIProvider apiKey={MAPS_API_KEY}>
+            <APIProvider apiKey={MAPS_API_KEY} language="zh-TW">
               <Map
                 defaultCenter={defaultCenter}
                 defaultZoom={defaultZoom}
@@ -222,7 +248,7 @@ const MapPanel = ({
           {selectedPlace && MAPS_API_KEY && (
             <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 20, backgroundColor: styles.panel, border: `1px solid ${styles.border}`, borderRadius: '10px', padding: '8px 12px', maxWidth: '200px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
               <div style={{ fontSize: '13px', fontWeight: 'bold', color: styles.text, marginBottom: '2px', paddingRight: '20px' }}>{selectedPlace.name}</div>
-              {selectedPlace.rating && <div style={{ fontSize: '12px', color: styles.accent }}>{'★'.repeat(Math.round(selectedPlace.rating))} {selectedPlace.rating}</div>}
+              {selectedPlace.rating && <div style={{ fontSize: '12px', color: styles.accent }}>{'★'.repeat(Math.min(5, Math.round(selectedPlace.rating)))} {selectedPlace.rating}</div>}
               <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
                 <button onClick={() => { onAnalyzePlace && onAnalyzePlace(); setSelectedPlace(null); }} style={{ flex: 1, padding: '4px 0', borderRadius: '6px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
                   {lang === 'zh-TW' ? '透視評價' : 'Analyze'}

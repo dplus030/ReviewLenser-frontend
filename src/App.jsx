@@ -52,7 +52,7 @@ function App() {
   const isProRef = useRef(false);
   const [isTrial, setIsTrial] = useState(false);
   const [usageCount, setUsageCount] = useState(0);
-  const maxFreeUses = 10;
+  const maxFreeUses = 5;
 
   const [theme, setTheme] = useState(() => getSaved('theme', 'dark'));
   const [fontSize, setFontSize] = useState(() => getSaved('fontSize', 'medium'));
@@ -350,6 +350,15 @@ function App() {
     setQuestion('');
   }, []);
 
+  const extractRegionFromAddress = (address) => {
+    if (!address) return null;
+    const cities = ['台北市','新北市','基隆市','桃園市','新竹市','新竹縣','苗栗縣','台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','台南市','高雄市','屏東縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣'];
+    for (const city of cities) { if (address.includes(city)) return city; }
+    const short = ['台北','新北','基隆','桃園','新竹','苗栗','台中','彰化','南投','雲林','嘉義','台南','高雄','屏東','宜蘭','花蓮','台東','澎湖','金門','連江'];
+    for (const city of short) { if (address.includes(city)) return city; }
+    return null;
+  };
+
   const addToWishlist = useCallback((place) => {
     if (!isPro) { handleUpgradeClick(); return; }
     const id = place.place_id || place.name;
@@ -360,7 +369,8 @@ function App() {
         next = prev.filter(p => p.id !== id);
         showToast(t.wishlistToastRemoved, 'info');
       } else {
-        next = [{ id, name: place.name, rating: place.rating || null, address: place.address || '', lat: place.lat, lng: place.lng, note: '', folder: null, addedAt: new Date().toISOString() }, ...prev];
+        const region = extractRegionFromAddress(place.address || '');
+        next = [{ id, name: place.name, rating: place.rating || null, address: place.address || '', region, lat: place.lat, lng: place.lng, note: '', folder: null, addedAt: new Date().toISOString() }, ...prev];
         showToast(t.wishlistToastAdded, 'success');
       }
       localStorage.setItem('wishlist', JSON.stringify(next));
@@ -791,6 +801,8 @@ function App() {
         lang={lang}
         isOpen={showWishlist}
         onClose={() => setShowWishlist(false)}
+        isPro={isPro}
+        onUpgrade={handleUpgradeClick}
         wishlist={wishlist}
         onRemove={removeFromWishlist}
         onAnalyze={handleWishlistAnalyze}
