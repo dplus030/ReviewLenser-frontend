@@ -661,7 +661,7 @@ function App() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative' }}>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
       {!isLight && (
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.35 }}>
