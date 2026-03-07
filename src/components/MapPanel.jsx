@@ -7,19 +7,29 @@ const MapPanel = ({
   onAnalyzePlace,
   location, showRoute, useCurrentLoc, customLoc,
 }) => {
+  const getRouteStartPoint = () => {
+    if (useCurrentLoc && location?.lat) return `${location.lat},${location.lng}`;
+    if (!useCurrentLoc && customLoc?.trim()) return customLoc.trim();
+    return '';
+  };
+
   const getIframeUrl = () => {
     const langCode = lang === 'zh-TW' ? 'zh-TW' : 'en';
     const mapBase = `https://maps.google.com/maps?hl=${langCode}&`;
     const safeQuery = mapQuery || '台灣';
     if (safeQuery === '台灣') return `${mapBase}q=${encodeURIComponent('台灣')}&z=7&output=embed`;
+    if (showRoute) {
+      const startPoint = getRouteStartPoint();
+      if (startPoint && safeQuery !== startPoint) {
+        return `${mapBase}saddr=${encodeURIComponent(startPoint)}&daddr=${encodeURIComponent(safeQuery)}&output=embed`;
+      }
+    }
     return `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
   };
 
   const getRouteInfo = () => {
     if (!showRoute || !mapQuery || mapQuery === '台灣') return null;
-    let startPoint = '';
-    if (useCurrentLoc && location?.lat) startPoint = `${location.lat},${location.lng}`;
-    else if (!useCurrentLoc && customLoc?.trim()) startPoint = customLoc.trim();
+    const startPoint = getRouteStartPoint();
     if (!startPoint) return { url: null };
     const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(startPoint)}&destination=${encodeURIComponent(mapQuery)}`;
     return { url };
