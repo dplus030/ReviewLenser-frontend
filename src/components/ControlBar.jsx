@@ -5,12 +5,12 @@ const DISTANCE_STEPS = [0.3, 0.5, 1, 2, 3, 5, 8, 10];
 
 const ControlBar = ({
   styles, isLight, t, showMap, mode, setMode,
-  toneMode, handleToneChange, customTone, setCustomTone, isPro,
+  isPro,
   useCurrentLoc, setUseCurrentLoc, customLoc, setCustomLoc, setMapQuery, setMapInputValue,
   category, setCategory, customCategory, setCustomCategory,
   distanceKm, setDistanceKm,
   showRoute, setShowRoute,
-  getToneIcon, handleUpgradeClick, isMobile, onToggleMap
+  handleUpgradeClick, isMobile, onToggleMap
 }) => {
   const miniInput = {
     colorScheme: isLight ? 'light' : 'dark',
@@ -86,20 +86,6 @@ const ControlBar = ({
   const settingsPanel = (
     <>
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: mode === 'recommend' ? '8px' : '0' }}>
-        <div style={{ ...selectWrapperStyle, flex: toneMode === '自訂...' ? '0 0 110px' : '1 1 auto', minWidth: '100px' }}>
-          <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}>{getToneIcon()}</div>
-          <select value={toneMode} onChange={handleToneChange} style={{ ...pureSelectStyle, paddingLeft: '35px' }}>
-            <option value="毒舌評論家">{t.toneBrutal}</option>
-            <option value="極簡重點">{t.toneBrief}</option>
-            <option value="嚴謹專業">{t.tonePro}</option>
-            <option value="溫柔推坑">{t.toneWarm}</option>
-            <option value="自訂...">{!isPro && '🔒 '}{t.toneCustom}</option>
-          </select>
-          <div style={{ position: 'absolute', right: '8px', pointerEvents: 'none', fontSize: '10px', opacity: 0.5 }}>▼</div>
-        </div>
-        {toneMode === '自訂...' && (
-          <input placeholder={t.toneCustomPh} value={customTone} onChange={(e) => setCustomTone(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '60px', padding: '6px' }} />
-        )}
         <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0 }}>
           {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
         </button>
@@ -195,37 +181,19 @@ const ControlBar = ({
   }
 
   return (
-    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1000px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1400px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: mode === 'recommend' ? '10px' : '0' }}>
         <div style={{ display: 'flex', gap: '4px', flex: '1 1 auto', minWidth: '160px' }}>
           <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
           <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
         </div>
-        <div style={{ display: 'flex', gap: '6px', flex: '0 1 auto', justifyContent: 'flex-end', minWidth: '220px' }}>
-          <div style={{ display: 'flex', gap: '6px', flex: '1 1 auto', minWidth: 0, justifyContent: 'flex-end' }}>
-            <div style={{ ...selectWrapperStyle, flex: toneMode === '自訂...' ? '0 0 110px' : '0 1 140px', minWidth: '100px' }}>
-              <div style={{ position: 'absolute', left: '10px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}>{getToneIcon()}</div>
-              <select value={toneMode} onChange={handleToneChange} style={{ ...pureSelectStyle, paddingLeft: '35px' }}>
-                <option value="毒舌評論家">{t.toneBrutal}</option>
-                <option value="極簡重點">{t.toneBrief}</option>
-                <option value="嚴謹專業">{t.tonePro}</option>
-                <option value="溫柔推坑">{t.toneWarm}</option>
-                <option value="自訂...">{!isPro && '🔒 '}{t.toneCustom}</option>
-              </select>
-              <div style={{ position: 'absolute', right: '8px', pointerEvents: 'none', fontSize: '10px', opacity: 0.5 }}>▼</div>
-            </div>
-            {toneMode === '自訂...' && (
-              <input placeholder={t.toneCustomPh} value={customTone} onChange={(e) => setCustomTone(e.target.value)} style={{ ...miniInput, flex: '1 1 auto', minWidth: '60px', padding: '6px' }} />
-            )}
-          </div>
-          <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-            <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer' }}>
-              {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
-            </button>
-            <button onClick={onToggleMap} title={showMap ? t.mapOff : t.mapOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showMap ? styles.accent : 'transparent', color: showMap ? '#fff' : styles.text, cursor: 'pointer' }}>
-              {showMap ? <Icons.Map /> : <Icons.MapOff />}
-            </button>
-          </div>
+        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+          <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer' }}>
+            {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
+          </button>
+          <button onClick={onToggleMap} title={showMap ? t.mapOff : t.mapOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showMap ? styles.accent : 'transparent', color: showMap ? '#fff' : styles.text, cursor: 'pointer' }}>
+            {showMap ? <Icons.Map /> : <Icons.MapOff />}
+          </button>
         </div>
       </div>
 

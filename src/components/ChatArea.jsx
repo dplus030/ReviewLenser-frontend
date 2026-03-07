@@ -4,12 +4,12 @@ import UserBubble from './UserBubble';
 import { Icons } from './Icons';
 
 const ChatArea = ({ messages, styles, isLight, showMap, loading, mode, t, isMobile, isSpeaking, handleSpeak, handleRegenerate, setMapQuery, setMapInputValue, chatEndRef }) => (
-  <div style={{ flex: 1, width: showMap ? '100%' : '1000px', maxWidth: '100%', alignSelf: showMap ? 'stretch' : 'center', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', paddingRight: '5px', paddingBottom: isMobile ? '8px' : '80px' }}>
+  <div style={{ flex: 1, width: showMap ? '100%' : '1400px', maxWidth: '100%', alignSelf: showMap ? 'stretch' : 'center', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', paddingRight: '5px', paddingBottom: isMobile ? '8px' : '80px' }}>
     {messages.map((msg, index) => {
       const isLastAI = index === messages.length - 1 && msg.role === 'ai';
       return (
-        <div key={index} className={msg.isNew ? 'animate-ai-reply' : ''} style={{ display: 'flex', width: showMap ? '100%' : '1000px', maxWidth: '100%', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
-          <div style={{ maxWidth: '88%', padding: '12px 16px', borderRadius: '15px', backgroundColor: msg.role === 'user' ? styles.userBubble : styles.aiBubble, color: msg.role === 'user' ? '#fff' : styles.text, fontSize: '15px', lineHeight: '1.7', border: msg.role === 'ai' ? `1px solid ${styles.border}` : 'none', borderBottomRightRadius: msg.role === 'user' ? '4px' : '15px', borderBottomLeftRadius: msg.role === 'ai' ? '4px' : '15px' }}>
+        <div key={index} className={msg.isNew ? 'animate-ai-reply' : ''} style={{ display: 'flex', width: showMap ? '100%' : '1400px', maxWidth: '100%', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+          <div style={{ maxWidth: '88%', padding: '12px 16px', borderRadius: '15px', backgroundColor: msg.role === 'user' ? styles.userBubble : styles.aiBubble, color: msg.role === 'user' ? '#fff' : styles.text, fontSize: 'inherit', lineHeight: '1.7', border: msg.role === 'ai' ? `1px solid ${styles.border}` : 'none', borderBottomRightRadius: msg.role === 'user' ? '4px' : '15px', borderBottomLeftRadius: msg.role === 'ai' ? '4px' : '15px' }}>
             {msg.role === 'ai' ? (
               <div>
                 <MessageContent

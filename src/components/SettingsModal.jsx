@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fontSize, setFontSize, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
+const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fontSize, setFontSize, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, toneMode, handleToneChange, customTone, setCustomTone, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
   const [profileDraft, setProfileDraft] = useState(userProfile || '');
   const [saved, setSaved] = useState(false);
 
@@ -98,6 +98,24 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
               <option value="right">{t.mapPosRight}</option>
             </select>
           </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontWeight: 'bold', flexShrink: 0 }}>{lang === 'zh-TW' ? 'AI 語氣' : 'AI Tone'}</span>
+            <select value={toneMode} onChange={handleToneChange} style={{ ...miniInput, flex: 1 }}>
+              <option value="毒舌評論家">{t.toneBrutal}</option>
+              <option value="極簡重點">{t.toneBrief}</option>
+              <option value="嚴謹專業">{t.tonePro}</option>
+              <option value="溫柔推坑">{t.toneWarm}</option>
+              <option value="自訂...">{!isPro && '🔒 '}{t.toneCustom}</option>
+            </select>
+          </div>
+          {toneMode === '自訂...' && (
+            <input
+              placeholder={t.toneCustomPh}
+              value={customTone}
+              onChange={e => setCustomTone(e.target.value)}
+              style={{ ...miniInput, width: '100%', textAlign: 'left', boxSizing: 'border-box' }}
+            />
+          )}
         </div>
         <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

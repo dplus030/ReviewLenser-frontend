@@ -22,7 +22,6 @@ import ChatInput from './components/ChatInput';
 import AuthModal from './components/AuthModal';
 import PayModal from './components/PayModal';
 import SettingsModal from './components/SettingsModal';
-import { Icons } from './components/Icons';
 import LandingPage from './pages/LandingPage';
 import ConversationPanel from './components/ConversationPanel';
 import WishlistPanel from './components/WishlistPanel';
@@ -352,6 +351,7 @@ function App() {
   }, []);
 
   const addToWishlist = useCallback((place) => {
+    if (!isPro) { handleUpgradeClick(); return; }
     const id = place.place_id || place.name;
     setWishlist(prev => {
       const exists = prev.find(p => p.id === id);
@@ -360,13 +360,13 @@ function App() {
         next = prev.filter(p => p.id !== id);
         showToast(t.wishlistToastRemoved, 'info');
       } else {
-        next = [{ id, name: place.name, rating: place.rating || null, address: place.address || '', lat: place.lat, lng: place.lng, note: '', addedAt: new Date().toISOString() }, ...prev];
+        next = [{ id, name: place.name, rating: place.rating || null, address: place.address || '', lat: place.lat, lng: place.lng, note: '', folder: null, addedAt: new Date().toISOString() }, ...prev];
         showToast(t.wishlistToastAdded, 'success');
       }
       localStorage.setItem('wishlist', JSON.stringify(next));
       return next;
     });
-  }, [showToast, t.wishlistToastRemoved, t.wishlistToastAdded]);
+  }, [isPro, handleUpgradeClick, showToast, t.wishlistToastRemoved, t.wishlistToastAdded]);
 
   const removeFromWishlist = useCallback((id) => {
     setWishlist(prev => {
@@ -387,6 +387,18 @@ function App() {
       localStorage.setItem('wishlist', JSON.stringify(next));
       return next;
     });
+  }, []);
+
+  const moveWishlistFolder = useCallback((id, folder) => {
+    setWishlist(prev => {
+      const next = prev.map(p => p.id === id ? { ...p, folder } : p);
+      localStorage.setItem('wishlist', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const moveConvFolder = useCallback((id, folder) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, folder } : c));
   }, []);
 
   const handleWishlistAnalyze = useCallback((name) => {
@@ -547,14 +559,6 @@ function App() {
     return val || '';
   };
 
-  const getToneIcon = () => {
-    const safeTone = toneMode || "";
-    if (safeTone.includes('毒舌') || safeTone.includes('Brutal')) return <Icons.Flame />;
-    if (safeTone.includes('極簡') || safeTone.includes('Brief')) return <Icons.Zap />;
-    if (safeTone.includes('專業') || safeTone.includes('Expert')) return <Icons.Briefcase />;
-    if (safeTone.includes('自訂') || safeTone.includes('Custom')) return <Icons.Palette />;
-    return <Icons.Heart />;
-  };
 
   const handleSend = async (overrideContent = null) => {
     if (!currentUser) return setShowAuth(true);
@@ -766,6 +770,7 @@ function App() {
         styles={styles}
         isLight={isLight}
         t={t}
+        lang={lang}
         isOpen={showConvPanel}
         onClose={() => setShowConvPanel(false)}
         conversations={conversations}
@@ -773,6 +778,7 @@ function App() {
         onLoad={loadConversation}
         onDelete={deleteConversation}
         onNewChat={startNewChat}
+        onMoveConvFolder={moveConvFolder}
         isTempMode={isTempMode}
         setIsTempMode={setIsTempMode}
         currentUser={currentUser}
@@ -789,6 +795,7 @@ function App() {
         onRemove={removeFromWishlist}
         onAnalyze={handleWishlistAnalyze}
         onUpdateNote={updateWishlistNote}
+        onMoveFolder={moveWishlistFolder}
       />
 
       {isMobile ? (
@@ -803,10 +810,6 @@ function App() {
                   showMap={false}
                   mode={mode}
                   setMode={setMode}
-                  toneMode={toneMode}
-                  handleToneChange={handleToneChange}
-                  customTone={customTone}
-                  setCustomTone={setCustomTone}
                   isPro={isPro}
                   useCurrentLoc={useCurrentLoc}
                   setUseCurrentLoc={setUseCurrentLoc}
@@ -822,7 +825,6 @@ function App() {
                   setDistanceKm={setDistanceKm}
                   showRoute={showRoute}
                   setShowRoute={setShowRoute}
-                  getToneIcon={getToneIcon}
                   handleUpgradeClick={handleUpgradeClick}
                   isMobile={true}
                   onToggleMap={() => setMobileTab('map')}
@@ -969,10 +971,6 @@ function App() {
               showMap={showMap}
               mode={mode}
               setMode={setMode}
-              toneMode={toneMode}
-              handleToneChange={handleToneChange}
-              customTone={customTone}
-              setCustomTone={setCustomTone}
               isPro={isPro}
               useCurrentLoc={useCurrentLoc}
               setUseCurrentLoc={setUseCurrentLoc}
@@ -988,7 +986,6 @@ function App() {
               setDistanceKm={setDistanceKm}
               showRoute={showRoute}
               setShowRoute={setShowRoute}
-              getToneIcon={getToneIcon}
               handleUpgradeClick={handleUpgradeClick}
               isMobile={false}
               onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
@@ -1048,6 +1045,10 @@ function App() {
           isPro={isPro}
           userProfile={userProfile}
           setUserProfile={setUserProfile}
+          toneMode={toneMode}
+          handleToneChange={handleToneChange}
+          customTone={customTone}
+          setCustomTone={setCustomTone}
           onClose={() => setView('chat')}
           isMobile={isMobile}
           currentUser={currentUser}

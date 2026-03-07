@@ -131,8 +131,10 @@ const MapPanel = ({
   const routeUrl = (() => {
     if (!showRoute || !isValidStoreName) return null;
     const start = getRouteStartPoint();
-    if (!start) return null;
-    return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(start)}&destination=${encodeURIComponent(mapQuery)}`;
+    if (start) {
+      return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(start)}&destination=${encodeURIComponent(mapQuery)}`;
+    }
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`;
   })();
 
   const defaultCenter = location?.lat
@@ -159,6 +161,7 @@ const MapPanel = ({
                 defaultCenter={defaultCenter}
                 defaultZoom={defaultZoom}
                 mapId="DEMO_MAP_ID"
+                colorScheme={isLight ? 'LIGHT' : 'DARK'}
                 style={{ width: '100%', height: '100%' }}
                 gestureHandling="greedy"
                 disableDefaultUI={false}
@@ -241,13 +244,22 @@ const MapPanel = ({
             }}
             style={{ flex: 1, padding: '12px 20px', borderRadius: '30px', border: `1px solid ${styles.border}`, boxShadow: '0 4px 15px rgba(0,0,0,0.15)', backgroundColor: styles.panel, color: styles.text, fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
           />
+          {isValidStoreName && onAddToWishlist && (
+            <button
+              onClick={() => onAddToWishlist(selectedPlace || { name: mapQuery, place_id: mapQuery })}
+              title={isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? (lang === 'zh-TW' ? '已收藏' : 'Saved') : (lang === 'zh-TW' ? '加入口袋名單' : 'Save')}
+              style={{ width: '48px', height: '48px', borderRadius: '50%', border: `1px solid ${styles.border}`, backgroundColor: isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? styles.accent : styles.panel, color: isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? '#fff' : styles.text, fontSize: '20px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+            >
+              {isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? '★' : '☆'}
+            </button>
+          )}
           {isValidStoreName && onAnalyzePlace && (
             <button
               onClick={() => { onAnalyzePlace(); setSelectedPlace(null); }}
               title={lang === 'zh-TW' ? '透視此地點' : 'Analyze'}
               style={{ padding: '12px 16px', borderRadius: '30px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(0,0,0,0.15)' }}
             >
-              {lang === 'zh-TW' ? '🔍 透視' : '🔍'}
+              {lang === 'zh-TW' ? '搜索' : 'Search'}
             </button>
           )}
         </div>
