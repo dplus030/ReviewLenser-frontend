@@ -37,7 +37,7 @@ export const translations = {
     payTitle: '升級 Lenser AI Pro', payDesc: '成為真正的決策者。打破搜尋限制，解鎖自訂語氣與無廣告環境。',
     planMonthly: '月繳方案', planYearly: '年繳方案', mo: '月', yr: '年', save16: '省下 16%', btnPay: '前往結帳', back: '返回',
     adText: 'Google AdSense 廣告版位',
-    hero1: '刷屏，一直讀也讀不出重點。',
+    hero1: '刷屏，評論讀不出重點。',
     hero2: '怕踩雷？只看星星不準？',
     hero3: '讓 Lenser AI 幫你解決！',
     sectionEngineTitle: '不只是搜尋，更是決策引擎',
