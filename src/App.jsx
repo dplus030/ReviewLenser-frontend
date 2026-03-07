@@ -664,7 +664,7 @@ function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', backgroundColor: styles.bg, color: styles.text, fontFamily: 'sans-serif', overflow: 'hidden', position: 'relative' }}>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
-      {!isLight && (
+      {!isLight && !isMobile && (
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden', opacity: 0.35 }}>
           <div className="stars-sm" style={{ position: 'absolute', top: 0, left: 0 }} />
           <div className="stars-md" style={{ position: 'absolute', top: 0, left: 0 }} />
