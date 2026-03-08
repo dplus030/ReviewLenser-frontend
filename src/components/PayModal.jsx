@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const MONTHLY_URL = 'https://reviewlenser.lemonsqueezy.com/checkout/buy/c0b189da-9da3-4956-807d-360397e63394';
-const YEARLY_URL  = 'https://reviewlenser.lemonsqueezy.com/checkout/buy/c0b189da-9da3-4956-807d-360397e63394'; // TODO: replace with yearly product URL
+const YEARLY_URL  = 'https://reviewlenser.lemonsqueezy.com/checkout/buy/392784e6-f54c-4af5-9628-427c0d8a0352';
 
 const PayModal = ({ styles, isLight, t, onClose }) => {
   const [plan, setPlan] = useState('monthly');
