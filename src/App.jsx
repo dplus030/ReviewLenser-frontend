@@ -572,7 +572,7 @@ function App() {
 
   const handleSend = async (overrideContent = null) => {
     if (!currentUser) return setShowAuth(true);
-    if (!isPro && usageCount >= maxFreeUses) return handleUpgradeClick();
+    if (!isPro && !isTrial && usageCount >= maxFreeUses) return handleUpgradeClick();
 
     const safeQuery = mapQuery || '台灣';
     const isCoordinate = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(safeQuery);
@@ -608,7 +608,7 @@ function App() {
 
     const displayContent = mode === 'recommend'
       ? targetReq
-      : `搜索: ${safeQuery} ${targetQuestion ? `(${targetQuestion})` : '(評價總結)'}`;
+      : `${t.tabEval}: ${safeQuery} ${targetQuestion ? `(${targetQuestion})` : `(${lang === 'zh-TW' ? '評價總結' : 'Review Summary'})`}`;
 
     if (!overrideContent) {
       setMessages(prev => [...prev, { role: 'user', content: displayContent, settings: currentSettingsTags }]);
@@ -713,6 +713,7 @@ function App() {
           theme={theme}
           setTheme={setTheme}
           currentUser={currentUser}
+          isPro={isPro}
           toast={toast}
           showAuth={showAuth}
           setShowAuth={setShowAuth}

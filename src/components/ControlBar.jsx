@@ -82,6 +82,7 @@ const ControlBar = ({
   };
 
   const [mobileExpanded, setMobileExpanded] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const settingsPanel = (
     <>
@@ -181,8 +182,8 @@ const ControlBar = ({
   }
 
   return (
-    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1400px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: mode === 'recommend' ? '10px' : '0' }}>
+    <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1000px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: collapsed ? '0' : (mode === 'recommend' ? '10px' : '0') }}>
         <div style={{ display: 'flex', gap: '4px', flex: '1 1 auto', minWidth: '160px' }}>
           <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
           <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
@@ -194,10 +195,13 @@ const ControlBar = ({
           <button onClick={onToggleMap} title={showMap ? t.mapOff : t.mapOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showMap ? styles.accent : 'transparent', color: showMap ? '#fff' : styles.text, cursor: 'pointer' }}>
             {showMap ? <Icons.Map /> : <Icons.MapOff />}
           </button>
+          <button onClick={() => setCollapsed(v => !v)} title={collapsed ? '展開設定' : '收起設定'} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: 'transparent', color: styles.text, cursor: 'pointer', fontSize: '12px' }}>
+            {collapsed ? '▼' : '▲'}
+          </button>
         </div>
       </div>
 
-      {mode === 'recommend' && (
+      {!collapsed && mode === 'recommend' && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', width: '100%' }}>
           {/* Location toggle */}
           <button

@@ -7,7 +7,7 @@ import PayModal from '../components/PayModal';
 const LandingPage = ({
   styles, isLight, isMobile, t, lang, setLang,
   theme, setTheme,
-  currentUser, toast,
+  currentUser, isPro, toast,
   showAuth, setShowAuth, showPay, setShowPay,
   billingCycle, setBillingCycle,
   authEmail, setAuthEmail, authPassword, setAuthPassword,
@@ -70,6 +70,7 @@ const LandingPage = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: isMobile ? '30px' : '40px', height: isMobile ? '30px' : '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
           {!isMobile && <span className="brand-font" style={{ fontSize: '1.6rem' }}>Lenser AI</span>}
+          {isPro && <span style={{ backgroundColor: styles.accent, color: 'white', padding: '2px 6px', borderRadius: '6px', fontSize: '12px', fontWeight: 900, letterSpacing: '1px' }}>PRO</span>}
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem('lang', e.target.value); }} style={{ ...miniInput, backgroundColor: 'transparent', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
@@ -187,7 +188,11 @@ const LandingPage = ({
                 <li style={{ borderTop: `1px dashed ${isLight ? '#cce0ff' : '#1e3a8a'}`, margin: '10px 0' }}></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> {t.proInc1}</li>
               </ul>
-              <button onClick={() => { if (!currentUser) setShowAuth(true); else setShowPay(true); }} style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: 'none', background: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>{t.btnPro}</button>
+              {isPro ? (
+                <div style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: `2px solid ${styles.accent}`, background: 'transparent', color: styles.accent, fontWeight: 'bold', textAlign: 'center', fontSize: '1rem', boxSizing: 'border-box' }}>{t.alreadyProMsg}</div>
+              ) : (
+                <button onClick={() => { if (!currentUser) setShowAuth(true); else setShowPay(true); }} style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: 'none', background: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>{t.btnPro}</button>
+              )}
             </div>
           </div>
         </div>

@@ -251,7 +251,7 @@ const MapPanel = ({
               {selectedPlace.rating && <div style={{ fontSize: '12px', color: styles.accent }}>{'★'.repeat(Math.min(5, Math.round(selectedPlace.rating)))} {selectedPlace.rating}</div>}
               <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
                 <button onClick={() => { onAnalyzePlace && onAnalyzePlace(); setSelectedPlace(null); }} style={{ flex: 1, padding: '4px 0', borderRadius: '6px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  {lang === 'zh-TW' ? '透視評價' : 'Analyze'}
+                  🔍
                 </button>
                 {onAddToWishlist && (
                   <button

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icons } from './Icons';
 
 const ChatInput = ({ styles, isLight, isMobile, showMap, mode, userReq, setUserReq, question, setQuestion, loading, isListening, handleVoiceInput, handleSend, handleKeyDown, placeholder }) => (
