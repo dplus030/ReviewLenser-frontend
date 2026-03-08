@@ -4,7 +4,7 @@ import UserBubble from './UserBubble';
 import { Icons } from './Icons';
 
 const ChatArea = ({ messages, styles, isLight, showMap, loading, mode, t, isMobile, isSpeaking, handleSpeak, handleRegenerate, setMapQuery, setMapInputValue, chatEndRef }) => (
-  <div style={{ flex: 1, width: showMap ? '100%' : '1000px', maxWidth: '100%', alignSelf: showMap ? 'stretch' : 'center', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '16px', paddingRight: '16px', paddingBottom: isMobile ? '8px' : '80px' }}>
+  <div style={{ flex: 1, width: showMap ? '100%' : '1000px', maxWidth: '100%', boxSizing: 'border-box', alignSelf: showMap ? 'stretch' : 'center', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '16px', paddingRight: '16px', paddingBottom: isMobile ? '8px' : '80px' }}>
     {messages.map((msg, index) => {
       const isLastAI = index === messages.length - 1 && msg.role === 'ai';
       return (
