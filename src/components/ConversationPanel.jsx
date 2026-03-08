@@ -54,7 +54,7 @@ const ConversationPanel = ({
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 200 }} />
 
-      <div className="fade-in-up" style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 'min(380px, 100vw)', backgroundColor: styles.panel, borderRight: `1px solid ${styles.border}`, zIndex: 201, display: 'flex', flexDirection: 'column', boxShadow: '4px 0 20px rgba(0,0,0,0.2)' }}>
+      <div className="fade-in-up" style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: 'min(340px, calc(100vw - 48px))', backgroundColor: styles.panel, borderRight: `1px solid ${styles.border}`, zIndex: 201, display: 'flex', flexDirection: 'column', boxShadow: '4px 0 20px rgba(0,0,0,0.2)' }}>
         {/* Header */}
         <div style={{ padding: '16px 16px 12px', borderBottom: `1px solid ${styles.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontWeight: 700, fontSize: '15px', color: styles.text }}>{t.convHistory}</span>

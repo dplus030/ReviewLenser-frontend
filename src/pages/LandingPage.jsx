@@ -178,7 +178,10 @@ const LandingPage = ({
             <div style={{ flex: '1 1 350px', padding: '40px', backgroundColor: isLight ? '#f4f8ff' : '#0a101d', borderRadius: '24px', border: `2px solid ${styles.accent}`, position: 'relative', boxShadow: `0 20px 50px ${styles.accent}40`, display: 'flex', flexDirection: 'column' }}>
               <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: styles.accent, color: '#fff', padding: '5px 15px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', letterSpacing: '1px' }}>PRO VERSION</div>
               <h3 style={{ fontSize: '1.5rem', color: styles.accent, margin: '0 0 10px 0' }}>{t.proPlan}</h3>
-              <div style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '30px' }}>$159 <span style={{ fontSize: '1rem', color: '#888' }}>{t.proPriceMo}</span></div>
+              <div style={{ marginBottom: '30px' }}>
+                <div style={{ fontSize: '3rem', fontWeight: '900' }}>$299 <span style={{ fontSize: '1rem', color: '#888' }}>NTD / 月</span></div>
+                <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 = 150 Lenser 幣　·　用完再加值</div>
+              </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 auto 0', display: 'flex', flexDirection: 'column', gap: '15px', color: isLight ? '#333' : '#eee', fontSize: '1.1rem' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat1}</b></li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat2}</b></li>

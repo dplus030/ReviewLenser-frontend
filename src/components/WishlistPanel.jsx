@@ -147,7 +147,7 @@ const WishlistPanel = ({
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 200 }} />
-      <div className="fade-in-up" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(400px, 100vw)', backgroundColor: styles.panel, borderLeft: `1px solid ${styles.border}`, zIndex: 201, display: 'flex', flexDirection: 'column', boxShadow: '-4px 0 20px rgba(0,0,0,0.2)' }}>
+      <div className="fade-in-up" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(360px, calc(100vw - 48px))', backgroundColor: styles.panel, borderLeft: `1px solid ${styles.border}`, zIndex: 201, display: 'flex', flexDirection: 'column', boxShadow: '-4px 0 20px rgba(0,0,0,0.2)' }}>
         {/* Header */}
         <div style={{ padding: '16px 16px 12px', borderBottom: `1px solid ${styles.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

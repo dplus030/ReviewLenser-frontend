@@ -13,7 +13,6 @@ import { GLOBAL_STYLES } from './constants/globalStyles';
 import { getSaved } from './utils/storage';
 
 import Toast from './components/Toast';
-import AdBanner from './components/AdBanner';
 import AppHeader from './components/AppHeader';
 import MapPanel from './components/MapPanel';
 import ControlBar from './components/ControlBar';
@@ -40,7 +39,7 @@ function App() {
   });
   const [showAuth, setShowAuth] = useState(false);
   const [showPay, setShowPay] = useState(false);
-  const [billingCycle, setBillingCycle] = useState('yearly');
+
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -52,6 +51,7 @@ function App() {
   const isProRef = useRef(false);
   const [isTrial, setIsTrial] = useState(false);
   const [usageCount, setUsageCount] = useState(0);
+  const [coins, setCoins] = useState(0);
   const maxFreeUses = 10;
 
   const [theme, setTheme] = useState(() => getSaved('theme', 'dark'));
@@ -174,6 +174,7 @@ function App() {
         setIsPro(data.is_pro || false);
         setIsTrial(data.is_trial || false);
         setUsageCount(data.usage_count || 0);
+        setCoins(data.coins || 0);
         if (wasNotPro && data.is_pro && !localStorage.getItem('proWelcomeShown')) {
           showToast(t.proUpgradeToast, 'success');
           localStorage.setItem('proWelcomeShown', '1');
@@ -253,6 +254,7 @@ function App() {
       setCurrentUser(null);
       setIsPro(false);
       setUsageCount(0);
+      setCoins(0);
       setView('landing');
     } catch (error) { console.error("Logout failed"); }
   };
@@ -645,6 +647,8 @@ function App() {
       });
 
       if (res.status === 403) { blocked = true; handleUpgradeClick(); return; }
+      if (res.status === 402) { blocked = true; showToast(t.errInsufficientCoins, 'warning'); setShowPay(true); return; }
+      if (res.status === 429) { blocked = true; showToast(t.errDailyQuota, 'warning'); return; }
 
       const data = await res.json();
       if (data.reply) {
@@ -654,7 +658,8 @@ function App() {
           setMapInputValue(data.map_keyword);
         }
         if (data.places && data.places.length > 0) setMapPlaces(data.places);
-        if (!isPro && !isTrial) setUsageCount(prev => prev + 1);
+        if (!isTrial) setUsageCount(prev => prev + 1);
+        if (isPro && !isTrial) setCoins(prev => prev - (mode === 'evaluate' ? 3 : 1));
       } else {
         setMessages(prev => [...prev, { role: 'ai', content: data.error || "Unknown Error", isNew: true }]);
       }
@@ -719,8 +724,6 @@ function App() {
           setShowAuth={setShowAuth}
           showPay={showPay}
           setShowPay={setShowPay}
-          billingCycle={billingCycle}
-          setBillingCycle={setBillingCycle}
           authEmail={authEmail}
           setAuthEmail={setAuthEmail}
           authPassword={authPassword}
@@ -767,6 +770,7 @@ function App() {
         currentUser={currentUser}
         usageCount={usageCount}
         maxFreeUses={maxFreeUses}
+        coins={coins}
         handleUpgradeClick={handleUpgradeClick}
         handleLogout={handleLogout}
         setShowAuth={setShowAuth}
@@ -931,11 +935,6 @@ function App() {
       ) : (
         <div style={{ flex: 1, display: 'flex', flexDirection: mapPosition === 'left' ? 'row' : 'row-reverse', overflow: 'hidden' }}>
 
-          {!showMap && !isPro && (
-            <div style={{ width: '60px', borderRight: mapPosition === 'left' ? `1px solid ${styles.border}` : 'none', borderLeft: mapPosition === 'right' ? `1px solid ${styles.border}` : 'none', backgroundColor: styles.panel, display: 'flex', flexDirection: 'column' }}>
-              <AdBanner isLight={isLight} t={t} mode="sidebar" />
-            </div>
-          )}
 
           {showMap && (
             <MapPanel
@@ -1093,8 +1092,6 @@ function App() {
           styles={styles}
           isLight={isLight}
           t={t}
-          billingCycle={billingCycle}
-          setBillingCycle={setBillingCycle}
           onClose={() => setShowPay(false)}
         />
       )}
