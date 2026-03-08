@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icons } from './Icons';
 
-const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, usageCount, maxFreeUses, coins, handleUpgradeClick, handleLogout, setShowAuth, setIsSignUpMode, setView, onShowHistory, onNewChat, onShowWishlist, wishlistCount }) => (
+const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, coins, handleUpgradeClick, handleLogout, setShowAuth, setIsSignUpMode, setView, onShowHistory, onNewChat, onShowWishlist, wishlistCount }) => (
   <div style={{ flexShrink: 0, height: '60px', borderBottom: `1px solid ${styles.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', zIndex: 20, background: isLight ? styles.panel : `radial-gradient(1.5px 1.5px at 4% 30%, rgba(255,255,255,0.55) 0%, transparent 100%), radial-gradient(1px 1px at 9% 70%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 14% 20%, rgba(255,255,255,0.45) 0%, transparent 100%), radial-gradient(1px 1px at 19% 60%, rgba(255,255,255,0.28) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 24% 40%, rgba(255,255,255,0.5) 0%, transparent 100%), radial-gradient(1px 1px at 30% 75%, rgba(255,255,255,0.32) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 36% 25%, rgba(255,255,255,0.42) 0%, transparent 100%), radial-gradient(1px 1px at 42% 65%, rgba(255,255,255,0.27) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 48% 35%, rgba(255,255,255,0.48) 0%, transparent 100%), radial-gradient(1px 1px at 54% 70%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 60% 20%, rgba(255,255,255,0.52) 0%, transparent 100%), radial-gradient(1px 1px at 66% 55%, rgba(255,255,255,0.28) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 72% 40%, rgba(255,255,255,0.44) 0%, transparent 100%), radial-gradient(1px 1px at 78% 72%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 84% 28%, rgba(255,255,255,0.5) 0%, transparent 100%), radial-gradient(1px 1px at 89% 62%, rgba(255,255,255,0.27) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 94% 38%, rgba(255,255,255,0.46) 0%, transparent 100%), radial-gradient(1px 1px at 98% 68%, rgba(255,255,255,0.28) 0%, transparent 100%), ${styles.panel}` }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
       {!isMobile && (
@@ -54,18 +54,13 @@ const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, usageCoun
       )}
     </div>
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-      {isPro && currentUser && (
+      {currentUser && (
         <span
           onClick={handleUpgradeClick}
-          style={{ fontSize: '13px', fontWeight: 'bold', color: coins <= 10 ? '#ff4d4d' : styles.accent, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+          style={{ fontSize: '13px', fontWeight: 'bold', color: coins <= 5 ? '#ff4d4d' : (isPro ? styles.accent : (isLight ? '#888' : '#aaa')), cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
           title={t.coinsLabel}
         >
           🪙 {coins}
-        </span>
-      )}
-      {!isPro && currentUser && (
-        <span style={{ fontSize: '12px', color: usageCount >= maxFreeUses ? '#ff4d4d' : (isLight ? '#888' : '#aaa') }}>
-          {usageCount}/{maxFreeUses} {t.times}
         </span>
       )}
       {!isPro && !isMobile && (

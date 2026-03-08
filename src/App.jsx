@@ -49,10 +49,7 @@ function App() {
 
   const [isPro, setIsPro] = useState(false);
   const isProRef = useRef(false);
-  const [isTrial, setIsTrial] = useState(false);
-  const [usageCount, setUsageCount] = useState(0);
   const [coins, setCoins] = useState(0);
-  const maxFreeUses = 10;
 
   const [theme, setTheme] = useState(() => getSaved('theme', 'dark'));
   const [fontSize, setFontSize] = useState(() => getSaved('fontSize', 'medium'));
@@ -172,9 +169,7 @@ function App() {
         const wasNotPro = !isProRef.current;
         isProRef.current = data.is_pro || false;
         setIsPro(data.is_pro || false);
-        setIsTrial(data.is_trial || false);
-        setUsageCount(data.usage_count || 0);
-        setCoins(data.coins || 0);
+        setCoins(data.tokens ?? data.coins ?? 0);
         if (wasNotPro && data.is_pro && !localStorage.getItem('proWelcomeShown')) {
           showToast(t.proUpgradeToast, 'success');
           localStorage.setItem('proWelcomeShown', '1');
@@ -574,7 +569,6 @@ function App() {
 
   const handleSend = async (overrideContent = null) => {
     if (!currentUser) return setShowAuth(true);
-    if (!isPro && !isTrial && usageCount >= maxFreeUses) return handleUpgradeClick();
 
     const safeQuery = mapQuery || '台灣';
     const isCoordinate = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(safeQuery);
@@ -658,8 +652,7 @@ function App() {
           setMapInputValue(data.map_keyword);
         }
         if (data.places && data.places.length > 0) setMapPlaces(data.places);
-        if (!isTrial) setUsageCount(prev => prev + 1);
-        if (isPro && !isTrial) setCoins(prev => prev - (mode === 'evaluate' ? 3 : 1));
+        setCoins(prev => Math.max(0, prev - 1));
       } else {
         setMessages(prev => [...prev, { role: 'ai', content: data.error || "Unknown Error", isNew: true }]);
       }
@@ -768,8 +761,6 @@ function App() {
         isMobile={isMobile}
         isPro={isPro}
         currentUser={currentUser}
-        usageCount={usageCount}
-        maxFreeUses={maxFreeUses}
         coins={coins}
         handleUpgradeClick={handleUpgradeClick}
         handleLogout={handleLogout}
