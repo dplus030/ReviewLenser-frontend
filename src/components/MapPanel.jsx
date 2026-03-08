@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
-import AdBanner from './AdBanner';
 
 const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -268,7 +267,6 @@ const MapPanel = ({
           )}
         </div>
 
-        {!isPro && <AdBanner isLight={isLight} t={t} mode="bottom" />}
 
         {/* Floating search input */}
         <div style={{ position: 'absolute', bottom: isPro ? '20px' : '85px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, width: '85%', maxWidth: '400px', display: 'flex', gap: '8px' }}>
