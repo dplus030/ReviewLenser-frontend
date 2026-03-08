@@ -180,7 +180,7 @@ const LandingPage = ({
               <h3 style={{ fontSize: '1.5rem', color: styles.accent, margin: '0 0 10px 0' }}>{t.proPlan}</h3>
               <div style={{ marginBottom: '30px' }}>
                 <div style={{ fontSize: '3rem', fontWeight: '900' }}>$299 <span style={{ fontSize: '1rem', color: '#888' }}>NTD / 月</span></div>
-                <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 = 150 Lenser 幣　·　用完再加值</div>
+                <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 150 幣 / 月　·　帳單日自動補滿</div>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 auto 0', display: 'flex', flexDirection: 'column', gap: '15px', color: isLight ? '#333' : '#eee', fontSize: '1.1rem' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat1}</b></li>

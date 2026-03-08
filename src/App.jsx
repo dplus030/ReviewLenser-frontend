@@ -642,7 +642,6 @@ function App() {
 
       if (res.status === 403) { blocked = true; handleUpgradeClick(); return; }
       if (res.status === 402) { blocked = true; showToast(t.errInsufficientCoins, 'warning'); setShowPay(true); return; }
-      if (res.status === 429) { blocked = true; showToast(t.errDailyQuota, 'warning'); return; }
 
       const data = await res.json();
       if (data.reply) {
