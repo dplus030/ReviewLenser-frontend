@@ -17,7 +17,16 @@ const LandingPage = ({
   const taglines = (isLight ? t.taglines : t.taglinesDark) || t.taglines || [];
   const [taglineIdx, setTaglineIdx] = useState(0);
   const [taglineKey, setTaglineKey] = useState(0);
+
+  // Random pain points on mount only
+  const pool = t.heroPains || [];
+  const len = pool.length;
+  const heroBase = React.useMemo(() => len > 0 ? Math.floor(Math.random() * len) : 0, []);
+  const hero0Idx = len > 0 ? heroBase % len : 0;
+  const hero1Idx = len > 1 ? (heroBase + 1) % len : 0;
   const featScrollRef = useRef(null);
+  const featIdxRef = useRef(7); // start at middle copy (index 7 of 21)
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
     if (!taglines.length) return;
@@ -28,8 +37,39 @@ const LandingPage = ({
     return () => clearInterval(timer);
   }, [taglines.length]);
 
+  // Initialise scroll position to the middle copy on mount
+  useEffect(() => {
+    const el = featScrollRef.current;
+    if (!el) return;
+    const cardWidth = (el.children[0]?.offsetWidth ?? 340) + 24;
+    el.scrollLeft = featIdxRef.current * cardWidth;
+  }, []);
+
   const scrollFeats = (dir) => {
-    featScrollRef.current?.scrollBy({ left: dir * 380, behavior: 'smooth' });
+    if (isScrollingRef.current) return;
+    const el = featScrollRef.current;
+    if (!el) return;
+
+    const cardWidth = (el.children[0]?.offsetWidth ?? 340) + 24;
+    const TOTAL = 7;
+    const next = featIdxRef.current + dir;
+    featIdxRef.current = next;
+    isScrollingRef.current = true;
+
+    el.scrollTo({ left: next * cardWidth, behavior: 'smooth' });
+
+    setTimeout(() => {
+      // silently jump back to middle copy to allow infinite scroll
+      let corrected = next;
+      if (next < TOTAL)           corrected = next + TOTAL;
+      else if (next >= TOTAL * 2) corrected = next - TOTAL;
+
+      if (corrected !== next) {
+        featIdxRef.current = corrected;
+        el.scrollTo({ left: corrected * cardWidth, behavior: 'instant' });
+      }
+      isScrollingRef.current = false;
+    }, 420);
   };
 
   const miniInput = {
@@ -56,6 +96,10 @@ const LandingPage = ({
             <div className="stars-sm"></div>
             <div className="stars-md"></div>
             <div className="stars-lg"></div>
+            {/* Blue glow accents */}
+            <div style={{ position: 'absolute', top: '15%', left: '20%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(30,100,255,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', top: '40%', right: '15%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(0,150,255,0.08) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', bottom: '20%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '250px', background: 'radial-gradient(ellipse, rgba(20,80,220,0.1) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
           </div>
         )}
         {isLight && (
@@ -76,6 +120,7 @@ const LandingPage = ({
           <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem('lang', e.target.value); }} style={{ ...miniInput, backgroundColor: 'transparent', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
             <option value="zh-TW">繁體中文</option>
             <option value="en">English</option>
+            <option value="ja">日本語</option>
           </select>
           <button onClick={() => { const newTheme = isLight ? 'dark' : 'light'; setTheme(newTheme); localStorage.setItem('theme', newTheme); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, fontSize: '16px' }}>
             {isLight ? '🌙' : '☀️'}
@@ -102,8 +147,8 @@ const LandingPage = ({
           </h2>
         </div>
         <div className="fade-in-up delay-3" style={{ display: 'inline-flex', flexDirection: 'column', gap: '10px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,20,0.85)', backdropFilter: 'blur(10px)', padding: isMobile ? '16px 18px' : '24px 30px', borderRadius: '20px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}`, borderLeft: `6px solid ${styles.accent}`, boxShadow: '0 15px 35px rgba(0,0,0,0.1)', textAlign: 'left', marginBottom: isMobile ? '20px' : '36px', width: isMobile ? '100%' : 'auto', boxSizing: 'border-box' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><span style={{ fontSize: '1.2rem', lineHeight: '1.4' }}>😩</span><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{t.hero1}</span></div>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><span style={{ fontSize: '1.2rem', lineHeight: '1.4' }}>🫠</span><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{t.hero2}</span></div>
+          {len > 0 && <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><span style={{ fontSize: '1.2rem', lineHeight: '1.4' }}>😩</span><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{pool[hero0Idx]}</span></div>}
+          {len > 1 && <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}><span style={{ fontSize: '1.2rem', lineHeight: '1.4' }}>🫠</span><span style={{ color: isLight ? '#555' : '#aaa', fontSize: isMobile ? '0.95rem' : '1.1rem', lineHeight: '1.4' }}>{pool[hero1Idx]}</span></div>}
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '4px' }}><span style={{ fontSize: '1.2rem', lineHeight: '1.4' }}>🥴</span><span style={{ color: styles.text, fontWeight: 'bold', fontSize: isMobile ? '1rem' : '1.15rem', lineHeight: '1.4' }}>{t.hero3}</span></div>
         </div>
         <button className="fade-in-up delay-3" onClick={handleEnterApp} style={{ padding: isMobile ? '16px 0' : '20px 60px', width: isMobile ? '100%' : 'auto', fontSize: isMobile ? '1.1rem' : '1.25rem', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '40px', cursor: 'pointer', fontWeight: '900', boxShadow: `0 10px 30px ${styles.accent}50` }}>{t.enter}</button>
@@ -129,21 +174,24 @@ const LandingPage = ({
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
             <div ref={featScrollRef} className="cards-scroll" style={{ display: 'flex', gap: '24px', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: '16px', paddingLeft: isMobile ? '20px' : '0', paddingRight: isMobile ? '20px' : '0', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
-              {[
-                { icon: <Icons.Heart />, title: t.feat1Title, desc: t.feat1Desc },
-                { icon: <Icons.Flame />, title: t.feat2Title, desc: t.feat2Desc },
-                { icon: <Icons.Shield />, title: t.feat3Title, desc: t.feat3Desc },
-                { icon: <Icons.Brain />, title: t.feat4Title, desc: t.feat4Desc },
-                { icon: <Icons.Compass />, title: t.feat5Title, desc: t.feat5Desc },
-                { icon: <Icons.Briefcase />, title: t.feat6Title, desc: t.feat6Desc },
-                { icon: <Icons.Zap />, title: t.feat7Title, desc: t.feat7Desc }
-              ].map((feat, i) => (
-                <div key={i} style={{ flex: '0 0 min(85vw, 340px)', scrollSnapAlign: 'start', padding: isMobile ? '24px 20px' : '40px 30px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,25,0.75)', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.07)'}`, boxShadow: isLight ? '0 10px 40px rgba(0,0,0,0.06)' : '0 10px 40px rgba(0,0,0,0.5)', textAlign: 'left', backdropFilter: 'blur(12px)' }}>
-                  <div style={{ width: '60px', height: '60px', backgroundColor: `${styles.accent}18`, color: styles.accent, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>{feat.icon}</div>
-                  <h3 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '900' }}>{feat.title}</h3>
-                  <p style={{ color: isLight ? '#666' : '#aaa', lineHeight: '1.7', fontSize: '1.05rem' }}>{feat.desc}</p>
-                </div>
-              ))}
+              {(() => {
+                const feats = [
+                  { icon: <Icons.Heart />, title: t.feat1Title, desc: t.feat1Desc },
+                  { icon: <Icons.Flame />, title: t.feat2Title, desc: t.feat2Desc },
+                  { icon: <Icons.Shield />, title: t.feat3Title, desc: t.feat3Desc },
+                  { icon: <Icons.Brain />, title: t.feat4Title, desc: t.feat4Desc },
+                  { icon: <Icons.Compass />, title: t.feat5Title, desc: t.feat5Desc },
+                  { icon: <Icons.Briefcase />, title: t.feat6Title, desc: t.feat6Desc },
+                  { icon: <Icons.Zap />, title: t.feat7Title, desc: t.feat7Desc }
+                ];
+                return [...feats, ...feats, ...feats].map((feat, i) => (
+                  <div key={i} style={{ flex: '0 0 min(85vw, 340px)', scrollSnapAlign: 'start', padding: isMobile ? '24px 20px' : '40px 30px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,25,0.75)', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.07)'}`, boxShadow: isLight ? '0 10px 40px rgba(0,0,0,0.06)' : '0 10px 40px rgba(0,0,0,0.5)', textAlign: 'left', backdropFilter: 'blur(12px)' }}>
+                    <div style={{ width: '60px', height: '60px', backgroundColor: `${styles.accent}18`, color: styles.accent, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>{feat.icon}</div>
+                    <h3 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '900' }}>{feat.title}</h3>
+                    <p style={{ color: isLight ? '#666' : '#aaa', lineHeight: '1.7', fontSize: '1.05rem' }}>{feat.desc}</p>
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         </div>
@@ -178,8 +226,8 @@ const LandingPage = ({
               <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: styles.accent, color: '#fff', padding: '5px 15px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', letterSpacing: '1px' }}>PRO VERSION</div>
               <h3 style={{ fontSize: '1.5rem', color: styles.accent, margin: '0 0 10px 0' }}>{t.proPlan}</h3>
               <div style={{ marginBottom: '30px' }}>
-                <div style={{ fontSize: '3rem', fontWeight: '900' }}>$299 <span style={{ fontSize: '1rem', color: '#888' }}>NTD / 月</span></div>
-                <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 150 幣 / 月　·　帳單日自動補滿</div>
+                <div style={{ fontSize: '3rem', fontWeight: '900' }}>$299 <span style={{ fontSize: '1rem', color: '#888' }}>NTD / {t.mo}</span></div>
+                <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 {t.proSubtitle}</div>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 auto 0', display: 'flex', flexDirection: 'column', gap: '15px', color: isLight ? '#333' : '#eee', fontSize: '1.1rem' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><Icons.CheckGreen /> <b>{t.proFeat1}</b></li>

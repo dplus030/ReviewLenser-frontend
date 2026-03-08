@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 
-const formatDate = (ts) => {
+const formatDate = (ts, lang) => {
   if (!ts) return '';
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   const now = new Date();
   const diff = now - d;
-  if (diff < 60000) return '剛剛';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)} 分鐘前`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)} 小時前`;
-  return d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric' });
+  if (diff < 60000) return lang === 'ja' ? 'たった今' : lang === 'en' ? 'just now' : '剛剛';
+  if (diff < 3600000) return lang === 'ja' ? `${Math.floor(diff / 60000)} 分前` : lang === 'en' ? `${Math.floor(diff / 60000)}m ago` : `${Math.floor(diff / 60000)} 分鐘前`;
+  if (diff < 86400000) return lang === 'ja' ? `${Math.floor(diff / 3600000)} 時間前` : lang === 'en' ? `${Math.floor(diff / 3600000)}h ago` : `${Math.floor(diff / 3600000)} 小時前`;
+  return d.toLocaleDateString(lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : 'en-US', { month: 'numeric', day: 'numeric' });
 };
 
-const DEFAULT_FOLDER = lang => lang === 'zh-TW' ? '未分類' : 'Uncategorized';
+const DEFAULT_FOLDER = t => t.folderUncategorized;
 
 const ConversationPanel = ({
   styles, isLight, t, lang,
@@ -34,7 +34,7 @@ const ConversationPanel = ({
     setCollapsedFolders(prev => ({ ...prev, [folder]: !prev[folder] }));
   };
 
-  const defFolder = DEFAULT_FOLDER(lang || 'zh-TW');
+  const defFolder = DEFAULT_FOLDER(t);
 
   // Group conversations by folder
   const folderMap = {};
@@ -59,8 +59,8 @@ const ConversationPanel = ({
         <div style={{ padding: '16px 16px 12px', borderBottom: `1px solid ${styles.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <span style={{ fontWeight: 700, fontSize: '15px', color: styles.text }}>{t.convHistory}</span>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button onClick={() => setShowNewFolder(v => !v)} title={lang === 'zh-TW' ? '新增資料夾' : 'New Folder'} style={{ padding: '4px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: 'none', color: styles.text, fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
-              {lang === 'zh-TW' ? '+ 資料夾' : '+ Folder'}
+            <button onClick={() => setShowNewFolder(v => !v)} title={t.folderNewTitle} style={{ padding: '4px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: 'none', color: styles.text, fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+              {t.folderNewBtn}
             </button>
             <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#888' : '#aaa', fontSize: '18px', lineHeight: 1 }}>×</button>
           </div>
@@ -69,8 +69,8 @@ const ConversationPanel = ({
         {/* New folder input */}
         {showNewFolder && (
           <div style={{ padding: '8px 16px', borderBottom: `1px solid ${styles.border}`, display: 'flex', gap: '8px', flexShrink: 0 }}>
-            <input autoFocus value={newFolderInput} onChange={e => setNewFolderInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && newFolderInput.trim()) setShowNewFolder(false); if (e.key === 'Escape') { setShowNewFolder(false); setNewFolderInput(''); } }} placeholder={lang === 'zh-TW' ? '資料夾名稱...' : 'Folder name...'} style={{ flex: 1, padding: '6px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, backgroundColor: styles.bg, color: styles.text, fontSize: '13px', outline: 'none' }} />
-            <button onClick={() => { if (newFolderInput.trim()) setShowNewFolder(false); }} style={{ padding: '6px 12px', borderRadius: '8px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: 700 }}>{lang === 'zh-TW' ? '建立' : 'Create'}</button>
+            <input autoFocus value={newFolderInput} onChange={e => setNewFolderInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && newFolderInput.trim()) setShowNewFolder(false); if (e.key === 'Escape') { setShowNewFolder(false); setNewFolderInput(''); } }} placeholder={lang === 'zh-TW' ? '資料夾名稱...' : lang === 'ja' ? 'フォルダ名...' : 'Folder name...'} style={{ flex: 1, padding: '6px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, backgroundColor: styles.bg, color: styles.text, fontSize: '13px', outline: 'none' }} />
+            <button onClick={() => { if (newFolderInput.trim()) setShowNewFolder(false); }} style={{ padding: '6px 12px', borderRadius: '8px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: 700 }}>{t.folderCreate}</button>
           </div>
         )}
 
@@ -118,10 +118,10 @@ const ConversationPanel = ({
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: styles.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{conv.title || t.convUntitled}</div>
-                        <div style={{ fontSize: '11px', color: isLight ? '#aaa' : '#666', marginTop: '3px' }}>{formatDate(conv.updatedAt)}</div>
+                        <div style={{ fontSize: '11px', color: isLight ? '#aaa' : '#666', marginTop: '3px' }}>{formatDate(conv.updatedAt, lang)}</div>
                       </div>
                       <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
-                        <button onClick={e => { e.stopPropagation(); setMovingConvId(movingConvId === conv.id ? null : conv.id); }} title={lang === 'zh-TW' ? '移至資料夾' : 'Move'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#ccc' : '#555', fontSize: '13px', padding: '0 3px', lineHeight: 1 }} onMouseEnter={e => e.currentTarget.style.color = styles.accent} onMouseLeave={e => e.currentTarget.style.color = isLight ? '#ccc' : '#555'}>📁</button>
+                        <button onClick={e => { e.stopPropagation(); setMovingConvId(movingConvId === conv.id ? null : conv.id); }} title={t.folderMove} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#ccc' : '#555', fontSize: '13px', padding: '0 3px', lineHeight: 1 }} onMouseEnter={e => e.currentTarget.style.color = styles.accent} onMouseLeave={e => e.currentTarget.style.color = isLight ? '#ccc' : '#555'}>📁</button>
                         <button onClick={e => { e.stopPropagation(); onDelete(conv.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#ccc' : '#555', fontSize: '14px', padding: '0 2px', lineHeight: 1 }} onMouseEnter={e => e.currentTarget.style.color = '#ff4d4d'} onMouseLeave={e => e.currentTarget.style.color = isLight ? '#ccc' : '#555'}>×</button>
                       </div>
                     </div>

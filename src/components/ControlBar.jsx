@@ -10,7 +10,8 @@ const ControlBar = ({
   category, setCategory, customCategory, setCustomCategory,
   distanceKm, setDistanceKm,
   showRoute, setShowRoute,
-  handleUpgradeClick, isMobile, onToggleMap
+  handleUpgradeClick, isMobile, onToggleMap,
+  currentUser, onShowHistory, onNewChat, onShowWishlist, wishlistCount
 }) => {
   const miniInput = {
     colorScheme: isLight ? 'light' : 'dark',
@@ -184,14 +185,29 @@ const ControlBar = ({
   return (
     <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '12px', borderRadius: '12px', marginBottom: mode === 'recommend' ? '12px' : '0', border: `1px solid ${styles.border}`, maxWidth: showMap ? '100%' : '1000px', alignSelf: showMap ? 'auto' : 'center', width: '100%', boxSizing: 'border-box' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: collapsed ? '0' : (mode === 'recommend' ? '10px' : '0') }}>
-        <div style={{ display: 'flex', gap: '4px', flex: '1 1 auto', minWidth: '160px' }}>
+        <div style={{ display: 'flex', gap: '4px', flex: '1 1 auto', minWidth: '160px', alignItems: 'center' }}>
+          {currentUser && (
+            <button onClick={onShowHistory} title={t.convHistory} style={{ background: 'none', border: `1px solid ${styles.border}`, borderRadius: '8px', cursor: 'pointer', color: styles.text, padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+              <span style={{ fontSize: '14px' }}>☰</span>
+            </button>
+          )}
           <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
           <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
         </div>
-        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-          <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer' }}>
-            {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
-          </button>
+        {currentUser && (
+          <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+            <button onClick={onNewChat} title={t.convNewChat} style={{ background: 'none', border: `1px solid ${styles.border}`, borderRadius: '8px', cursor: 'pointer', color: styles.text, padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '14px' }}>✎</span>
+            </button>
+            <button onClick={onShowWishlist} title={t.wishlistTitle} style={{ background: 'none', border: `1px solid ${styles.border}`, borderRadius: '8px', cursor: 'pointer', color: styles.text, padding: '4px 10px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
+              <span style={{ fontSize: '14px' }}>★</span>
+              {wishlistCount > 0 && (
+                <span style={{ position: 'absolute', top: '-5px', right: '-5px', backgroundColor: styles.accent, color: '#fff', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{wishlistCount}</span>
+              )}
+            </button>
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: '6px', flexShrink: 0, marginLeft: 'auto' }}>
           <button onClick={onToggleMap} title={showMap ? t.mapOff : t.mapOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showMap ? styles.accent : 'transparent', color: showMap ? '#fff' : styles.text, cursor: 'pointer' }}>
             {showMap ? <Icons.Map /> : <Icons.MapOff />}
           </button>
@@ -257,6 +273,10 @@ const ControlBar = ({
             />
             <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', minWidth: '36px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
           </div>
+          {/* Route toggle */}
+          <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0, marginLeft: 'auto' }}>
+            {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
+          </button>
         </div>
       )}
     </div>

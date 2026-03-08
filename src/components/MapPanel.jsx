@@ -115,7 +115,7 @@ function FallbackIframe({ mapQuery, lang, isLight, showRoute, location, useCurre
     if (!useCurrentLoc && customLoc?.trim()) return customLoc.trim();
     return '';
   };
-  const langCode = lang === 'zh-TW' ? 'zh-TW' : 'en';
+  const langCode = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja' : 'en';
   const mapBase = `https://maps.google.com/maps?hl=${langCode}&`;
   const safeQuery = mapQuery || '台灣';
   let src;
@@ -236,7 +236,7 @@ const MapPanel = ({
               href={routeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              title={lang === 'zh-TW' ? '在 Google Maps 開啟路線' : 'Open in Google Maps'}
+              title={t.mapOpenRoute}
               style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 20, backgroundColor: styles.accent, color: '#fff', width: '36px', height: '36px', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
@@ -255,7 +255,7 @@ const MapPanel = ({
                 {onAddToWishlist && (
                   <button
                     onClick={() => { onAddToWishlist(selectedPlace); }}
-                    title={isInWishlist && isInWishlist(selectedPlace.place_id) ? (lang === 'zh-TW' ? '已收藏' : 'Saved') : (lang === 'zh-TW' ? '加入口袋名單' : 'Save')}
+                    title={isInWishlist && isInWishlist(selectedPlace.place_id) ? t.wishlistAdded : t.wishlistAdd}
                     style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isInWishlist && isInWishlist(selectedPlace.place_id) ? styles.accent : 'transparent', color: isInWishlist && isInWishlist(selectedPlace.place_id) ? '#fff' : styles.text, fontSize: '14px', cursor: 'pointer', lineHeight: 1 }}
                   >
                     {isInWishlist && isInWishlist(selectedPlace.place_id) ? '★' : '☆'}
@@ -269,7 +269,7 @@ const MapPanel = ({
 
 
         {/* Floating search input */}
-        <div style={{ position: 'absolute', bottom: isPro ? '20px' : '85px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, width: '85%', maxWidth: '400px', display: 'flex', gap: '8px' }}>
+        <div style={{ position: 'absolute', bottom: isPro ? '20px' : '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, width: '85%', maxWidth: '400px', display: 'flex', gap: '8px' }}>
           <input
             placeholder={t.mapPh}
             value={mapInputValue}
@@ -286,7 +286,7 @@ const MapPanel = ({
           {isValidStoreName && onAddToWishlist && (
             <button
               onClick={() => onAddToWishlist(selectedPlace || { name: mapQuery, place_id: mapQuery })}
-              title={isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? (lang === 'zh-TW' ? '已收藏' : 'Saved') : (lang === 'zh-TW' ? '加入口袋名單' : 'Save')}
+              title={isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? t.wishlistAdded : t.wishlistAdd}
               style={{ width: '48px', height: '48px', borderRadius: '50%', border: `1px solid ${styles.border}`, backgroundColor: isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? styles.accent : styles.panel, color: isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? '#fff' : styles.text, fontSize: '20px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
             >
               {isInWishlist && isInWishlist(selectedPlace?.place_id || mapQuery) ? '★' : '☆'}
@@ -295,10 +295,10 @@ const MapPanel = ({
           {isValidStoreName && onAnalyzePlace && (
             <button
               onClick={() => { onAnalyzePlace(); setSelectedPlace(null); }}
-              title={lang === 'zh-TW' ? '透視此地點' : 'Analyze'}
+              title={t.wishlistAnalyze}
               style={{ padding: '12px 16px', borderRadius: '30px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(0,0,0,0.15)' }}
             >
-              {lang === 'zh-TW' ? '搜索' : 'Search'}
+              {t.mapSearch}
             </button>
           )}
         </div>

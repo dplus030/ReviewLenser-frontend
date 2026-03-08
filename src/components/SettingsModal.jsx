@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fontSize, setFontSize, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, toneMode, handleToneChange, customTone, setCustomTone, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick }) => {
+const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fontSize, setFontSize, mapPosition, setMapPosition, isPro, userProfile, setUserProfile, toneMode, handleToneChange, customTone, setCustomTone, onClose, isMobile, currentUser, handleLogout, setShowAuth, setIsSignUpMode, handleUpgradeClick, coins }) => {
   const [profileDraft, setProfileDraft] = useState(userProfile || '');
   const [saved, setSaved] = useState(false);
 
@@ -29,8 +29,19 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 10000 }}
     >
-      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: isMobile ? '20px 16px' : '30px', borderRadius: isMobile ? '20px 20px 0 0' : '24px', width: isMobile ? '100%' : '90%', maxWidth: isMobile ? '100%' : '360px', maxHeight: '90dvh', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${styles.border}`, color: styles.text, display: 'flex', flexDirection: 'column', gap: '15px', paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : '30px', boxSizing: 'border-box' }}>
+      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: isMobile ? '20px 16px' : '30px', borderRadius: isMobile ? '20px 20px 0 0' : '24px', width: isMobile ? '100%' : '90%', maxWidth: isMobile ? '100%' : '560px', maxHeight: '90dvh', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${styles.border}`, color: styles.text, display: 'flex', flexDirection: 'column', gap: '15px', paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : '30px', boxSizing: 'border-box' }}>
         <h3 style={{ marginTop: 0, marginBottom: '10px', textAlign: 'center' }}>{t.settings}</h3>
+        {currentUser && (
+          <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 'bold' }}>🪙 {t.coinsLabel}</span>
+            <span
+              onClick={() => { handleUpgradeClick(); onClose(); }}
+              style={{ fontSize: '20px', fontWeight: '900', color: coins <= 5 ? '#ff4d4d' : styles.accent, cursor: 'pointer' }}
+            >
+              {coins}
+            </span>
+          </div>
+        )}
         {isMobile && (
           <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -62,6 +73,7 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
             <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem('lang', e.target.value); }} style={miniInput}>
               <option value="zh-TW">繁體中文</option>
               <option value="en">English</option>
+              <option value="ja">日本語</option>
             </select>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -99,8 +111,8 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
             </select>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontWeight: 'bold', flexShrink: 0 }}>{lang === 'zh-TW' ? 'AI 語氣' : 'AI Tone'}</span>
-            <select value={toneMode} onChange={handleToneChange} style={{ ...miniInput, flex: 1 }}>
+            <span style={{ fontWeight: 'bold', flexShrink: 0 }}>{t.aiToneLabel}</span>
+            <select value={toneMode} onChange={handleToneChange} style={{ ...miniInput, width: '160px' }}>
               <option value="毒舌評論家">{t.toneBrutal}</option>
               <option value="極簡重點">{t.toneBrief}</option>
               <option value="嚴謹專業">{t.tonePro}</option>

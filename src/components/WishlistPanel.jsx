@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const DEFAULT_FOLDER = lang => lang === 'zh-TW' ? '未分類' : 'Uncategorized';
+const DEFAULT_FOLDER = t => t.folderUncategorized;
 
 const TW_CITIES = ['台北市','新北市','基隆市','桃園市','新竹市','新竹縣','苗栗縣','台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','台南市','高雄市','屏東縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣'];
 
@@ -55,20 +55,20 @@ const WishlistPanel = ({
   const filteredWishlist = regionFilter === 'all' ? wishlist : wishlist.filter(item => extractRegion(item.address) === regionFilter);
 
   // Group items by folder or region depending on viewMode
-  const defFolder = DEFAULT_FOLDER(lang);
+  const defFolder = DEFAULT_FOLDER(t);
 
   const folderMap = {};
   filteredWishlist.forEach(item => {
     const key = viewMode === 'region'
-      ? (extractRegion(item.address) || (lang === 'zh-TW' ? '其他地區' : 'Other'))
+      ? (extractRegion(item.address) || t.folderOther)
       : (item.folder || defFolder);
     if (!folderMap[key]) folderMap[key] = [];
     folderMap[key].push(item);
   });
 
   const folders = Object.keys(folderMap).sort((a, b) => {
-    if (a === defFolder || a === (lang === 'zh-TW' ? '其他地區' : 'Other')) return 1;
-    if (b === defFolder || b === (lang === 'zh-TW' ? '其他地區' : 'Other')) return -1;
+    if (a === defFolder || a === t.folderOther) return 1;
+    if (b === defFolder || b === t.folderOther) return -1;
     return a.localeCompare(b);
   });
 
@@ -117,7 +117,7 @@ const WishlistPanel = ({
         {movingId === item.id ? (
           <div style={{ marginTop: '8px' }}>
             <div style={{ fontSize: '11px', color: isLight ? '#888' : '#666', marginBottom: '5px', fontWeight: 600 }}>
-              {lang === 'zh-TW' ? '指派到資料夾：' : 'Assign to folder:'}
+              {t.folderAssignLabel}
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {allFolderNames.map(f => (
@@ -134,9 +134,9 @@ const WishlistPanel = ({
         {/* Actions */}
         <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
           <button onClick={() => { onAnalyze(item.name); onClose(); }} style={{ flex: 1, padding: '6px 0', borderRadius: '8px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
-            {lang === 'zh-TW' ? '透視評價' : t.wishlistAnalyze}
+            {t.wishlistAnalyze}
           </button>
-          <button onClick={() => setMovingId(movingId === item.id ? null : item.id)} title={lang === 'zh-TW' ? '指派資料夾' : 'Assign folder'} style={{ padding: '6px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: movingId === item.id ? `${styles.accent}20` : 'none', color: styles.text, fontSize: '12px', cursor: 'pointer' }}>
+          <button onClick={() => setMovingId(movingId === item.id ? null : item.id)} title={t.folderAssign} style={{ padding: '6px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: movingId === item.id ? `${styles.accent}20` : 'none', color: styles.text, fontSize: '12px', cursor: 'pointer' }}>
             📁
           </button>
         </div>
@@ -156,8 +156,8 @@ const WishlistPanel = ({
             {wishlist.length > 0 && <span style={{ backgroundColor: styles.accent, color: '#fff', borderRadius: '12px', padding: '1px 7px', fontSize: '11px', fontWeight: 700 }}>{wishlist.length}</span>}
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button onClick={() => setShowNewFolder(v => !v)} title={lang === 'zh-TW' ? '新增資料夾' : 'New Folder'} style={{ padding: '4px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: 'none', color: styles.text, fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
-              {lang === 'zh-TW' ? '+ 資料夾' : '+ Folder'}
+            <button onClick={() => setShowNewFolder(v => !v)} title={t.folderNewTitle} style={{ padding: '4px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, background: 'none', color: styles.text, fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+              {t.folderNewBtn}
             </button>
             <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: isLight ? '#888' : '#aaa', fontSize: '18px', lineHeight: 1 }}>×</button>
           </div>
@@ -168,15 +168,13 @@ const WishlistPanel = ({
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', textAlign: 'center' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
             <div style={{ fontSize: '16px', fontWeight: 700, color: styles.text, marginBottom: '10px' }}>
-              {lang === 'zh-TW' ? '口袋名單為 Pro 專屬功能' : 'Pocket List is a Pro Feature'}
+              {t.wishlistProTitle}
             </div>
             <div style={{ fontSize: '13px', color: isLight ? '#888' : '#666', lineHeight: 1.7, marginBottom: '24px' }}>
-              {lang === 'zh-TW'
-                ? '升級 Pro 後即可儲存愛店、建立資料夾，並依地區分類管理你的口袋名單。'
-                : 'Upgrade to Pro to save your favorite places, organize them in folders, and filter by region.'}
+              {t.wishlistProDesc}
             </div>
             <button onClick={onUpgrade} style={{ padding: '12px 32px', borderRadius: '30px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 700, fontSize: '14px', cursor: 'pointer', boxShadow: `0 6px 20px ${styles.accent}50` }}>
-              {lang === 'zh-TW' ? '升級 Pro 方案' : 'Upgrade to Pro'}
+              {t.wishlistProUpgrade}
             </button>
           </div>
         ) : (
@@ -189,10 +187,10 @@ const WishlistPanel = ({
                   value={newFolderInput}
                   onChange={e => setNewFolderInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && newFolderInput.trim()) { setShowNewFolder(false); } if (e.key === 'Escape') { setShowNewFolder(false); setNewFolderInput(''); } }}
-                  placeholder={lang === 'zh-TW' ? '資料夾名稱...' : 'Folder name...'}
+                  placeholder={lang === 'zh-TW' ? '資料夾名稱...' : lang === 'ja' ? 'フォルダ名...' : 'Folder name...'}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '8px', border: `1px solid ${styles.border}`, backgroundColor: styles.bg, color: styles.text, fontSize: '13px', outline: 'none' }}
                 />
-                <button onClick={() => { if (newFolderInput.trim()) setShowNewFolder(false); }} style={{ padding: '6px 12px', borderRadius: '8px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: 700 }}>{lang === 'zh-TW' ? '建立' : 'Create'}</button>
+                <button onClick={() => { if (newFolderInput.trim()) setShowNewFolder(false); }} style={{ padding: '6px 12px', borderRadius: '8px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: 700 }}>{t.folderCreate}</button>
               </div>
             )}
 
@@ -201,17 +199,17 @@ const WishlistPanel = ({
               <div style={{ padding: '8px 12px', borderBottom: `1px solid ${styles.border}`, display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', flexShrink: 0 }}>
                 {/* View mode toggle */}
                 <button onClick={() => setViewMode('folder')} style={{ padding: '3px 10px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: viewMode === 'folder' ? styles.accent : 'transparent', color: viewMode === 'folder' ? '#fff' : styles.text, fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}>
-                  📁 {lang === 'zh-TW' ? '資料夾' : 'Folder'}
+                  📁 {t.folderViewLabel}
                 </button>
                 <button onClick={() => setViewMode('region')} style={{ padding: '3px 10px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: viewMode === 'region' ? styles.accent : 'transparent', color: viewMode === 'region' ? '#fff' : styles.text, fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}>
-                  📍 {lang === 'zh-TW' ? '地區' : 'Region'}
+                  📍 {lang === 'zh-TW' ? '地區' : lang === 'ja' ? '地域' : 'Region'}
                 </button>
                 {/* Region filter chips (only in folder view) */}
                 {viewMode === 'folder' && allRegions.length > 0 && (
                   <>
                     <div style={{ width: '1px', height: '18px', backgroundColor: styles.border, flexShrink: 0 }} />
                     <button onClick={() => setRegionFilter('all')} style={{ padding: '3px 10px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: regionFilter === 'all' ? `${styles.accent}30` : 'transparent', color: regionFilter === 'all' ? styles.accent : (isLight ? '#888' : '#666'), fontSize: '11px', cursor: 'pointer', fontWeight: regionFilter === 'all' ? 700 : 400 }}>
-                      {lang === 'zh-TW' ? '全部' : 'All'}
+                      {t.regionAll}
                     </button>
                     {allRegions.map(r => (
                       <button key={r} onClick={() => setRegionFilter(regionFilter === r ? 'all' : r)} style={{ padding: '3px 10px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: regionFilter === r ? `${styles.accent}30` : 'transparent', color: regionFilter === r ? styles.accent : (isLight ? '#888' : '#666'), fontSize: '11px', cursor: 'pointer', fontWeight: regionFilter === r ? 700 : 400 }}>
@@ -230,12 +228,12 @@ const WishlistPanel = ({
                   <div style={{ fontSize: '36px', marginBottom: '12px' }}>★</div>
                   <div>{t.wishlistEmpty}</div>
                   <div style={{ fontSize: '11px', marginTop: '8px', color: isLight ? '#bbb' : '#444' }}>
-                    {lang === 'zh-TW' ? '在地圖上搜尋店家後，點擊 ☆ 加入口袋名單' : 'Search a place on the map and tap ☆ to save'}
+                    {t.wishlistMapHint}
                   </div>
                 </div>
               ) : filteredWishlist.length === 0 ? (
                 <div style={{ textAlign: 'center', color: isLight ? '#aaa' : '#555', fontSize: '13px', marginTop: '40px', padding: '0 20px' }}>
-                  {lang === 'zh-TW' ? `「${regionFilter}」尚無收藏` : `No places saved in "${regionFilter}"`}
+                  {t.wishlistRegionEmpty}
                 </div>
               ) : (
                 folders.map(folder => (

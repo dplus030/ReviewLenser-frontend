@@ -20,6 +20,7 @@ import ChatArea from './components/ChatArea';
 import ChatInput from './components/ChatInput';
 import AuthModal from './components/AuthModal';
 import PayModal from './components/PayModal';
+import BuyCoinsModal from './components/BuyCoinsModal';
 import SettingsModal from './components/SettingsModal';
 import LandingPage from './pages/LandingPage';
 import ConversationPanel from './components/ConversationPanel';
@@ -39,6 +40,7 @@ function App() {
   });
   const [showAuth, setShowAuth] = useState(false);
   const [showPay, setShowPay] = useState(false);
+  const [showBuyCoins, setShowBuyCoins] = useState(false);
 
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -127,7 +129,7 @@ function App() {
   const chatEndRef = useRef(null);
 
   const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
   const recognitionRef = useRef(null);
   const voiceTimeoutRef = useRef(null);
 
@@ -494,7 +496,7 @@ function App() {
 
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
-    recognition.lang = lang === 'zh-TW' ? 'zh-TW' : 'en-US';
+    recognition.lang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : 'en-US';
     recognition.interimResults = false;
     recognition.continuous = false;
 
@@ -513,10 +515,10 @@ function App() {
     try { recognition.start(); } catch (e) { stopVoiceRecognition(); }
   };
 
-  const handleSpeak = (text) => {
-    if (isSpeaking) { window.speechSynthesis.cancel(); setIsSpeaking(false); return; }
+  const handleSpeak = (text, index) => {
+    if (speakingIndex !== null) { window.speechSynthesis.cancel(); setSpeakingIndex(null); if (speakingIndex === index) return; }
     const utterance = new SpeechSynthesisUtterance(text.replace(/[*#【】\[\]]/g, ''));
-    const targetLang = lang === 'zh-TW' ? 'zh-TW' : 'en-US';
+    const targetLang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : 'en-US';
     utterance.lang = targetLang;
     utterance.rate = 0.92;
     utterance.pitch = 1.05;
@@ -526,13 +528,15 @@ function App() {
       if (!voices.length) return;
       const preferred = lang === 'zh-TW'
         ? ['Mei-Jia', 'Meijia', 'Ting-Ting', 'Tingting']
+        : lang === 'ja'
+        ? ['Kyoko', 'Otoya', 'O-ren']
         : ['Samantha', 'Karen', 'Moira', 'Serena', 'Daniel', 'Alex'];
       let best = null;
       for (const name of preferred) {
         best = voices.find(v => v.name.includes(name));
         if (best) break;
       }
-      if (!best) best = voices.find(v => v.lang === targetLang && v.localService) || voices.find(v => v.lang.startsWith(lang === 'zh-TW' ? 'zh' : 'en'));
+      if (!best) best = voices.find(v => v.lang === targetLang && v.localService) || voices.find(v => v.lang.startsWith(lang === 'zh-TW' ? 'zh' : lang === 'ja' ? 'ja' : 'en'));
       if (best) utterance.voice = best;
     };
 
@@ -542,8 +546,8 @@ function App() {
       window.speechSynthesis.onvoiceschanged = () => { pickVoice(); window.speechSynthesis.onvoiceschanged = null; };
     }
 
-    utterance.onend = () => setIsSpeaking(false);
-    setIsSpeaking(true);
+    utterance.onend = () => setSpeakingIndex(null);
+    setSpeakingIndex(index);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -595,7 +599,7 @@ function App() {
 
     let finalQuestion = targetQuestion.trim();
     if (mode === 'evaluate' && !finalQuestion) {
-      finalQuestion = lang === 'zh-TW' ? "請給予這家店的評價總結" : "Please provide a summary of reviews for this store.";
+      finalQuestion = t.evalDefaultQ;
     }
 
     const currentSettingsTags = mode === 'recommend'
@@ -604,7 +608,7 @@ function App() {
 
     const displayContent = mode === 'recommend'
       ? targetReq
-      : `${t.tabEval}: ${safeQuery} ${targetQuestion ? `(${targetQuestion})` : `(${lang === 'zh-TW' ? '評價總結' : 'Review Summary'})`}`;
+      : `${t.tabEval}: ${safeQuery} ${targetQuestion ? `(${targetQuestion})` : `(${t.evalSummaryLabel})`}`;
 
     if (!overrideContent) {
       setMessages(prev => [...prev, { role: 'user', content: displayContent, settings: currentSettingsTags }]);
@@ -656,7 +660,7 @@ function App() {
         setMessages(prev => [...prev, { role: 'ai', content: data.error || "Unknown Error", isNew: true }]);
       }
     } catch {
-      setMessages(prev => [...prev, { role: 'ai', content: lang === 'zh-TW' ? '伺服器連線失敗，請確認網路或稍後再試。' : 'Server connection failed. Please check your network or try again later.', isNew: true }]);
+      setMessages(prev => [...prev, { role: 'ai', content: t.errNetwork, isNew: true }]);
     } finally {
       setLoading(false);
       if (!blocked) {
@@ -762,6 +766,7 @@ function App() {
         currentUser={currentUser}
         coins={coins}
         handleUpgradeClick={handleUpgradeClick}
+        onBuyCoins={() => setShowBuyCoins(true)}
         handleLogout={handleLogout}
         setShowAuth={setShowAuth}
         setIsSignUpMode={setIsSignUpMode}
@@ -844,8 +849,9 @@ function App() {
                   loading={loading}
                   mode={mode}
                   t={t}
+                  lang={lang}
                   isMobile={true}
-                  isSpeaking={isSpeaking}
+                  speakingIndex={speakingIndex}
                   handleSpeak={handleSpeak}
                   handleRegenerate={handleRegenerate}
                   setMapQuery={setMapQuery}
@@ -911,14 +917,14 @@ function App() {
               style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'chat' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'chat' ? 'bold' : 'normal' }}
             >
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              <span>{lang === 'zh-TW' ? '對話' : 'Chat'}</span>
+              <span>{t.navChat}</span>
             </button>
             <button
               onClick={() => setMobileTab('map')}
               style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'map' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'map' ? 'bold' : 'normal' }}
             >
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-              <span>{lang === 'zh-TW' ? '地圖' : 'Map'}</span>
+              <span>{t.navMap}</span>
             </button>
           </div>
         </>
@@ -991,6 +997,11 @@ function App() {
               handleUpgradeClick={handleUpgradeClick}
               isMobile={false}
               onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
+              currentUser={currentUser}
+              onShowHistory={() => setShowConvPanel(true)}
+              onNewChat={startNewChat}
+              onShowWishlist={() => setShowWishlist(true)}
+              wishlistCount={wishlist.length}
             />
 
             <ChatArea
@@ -1001,8 +1012,9 @@ function App() {
               loading={loading}
               mode={mode}
               t={t}
+              lang={lang}
               isMobile={false}
-              isSpeaking={isSpeaking}
+              speakingIndex={speakingIndex}
               handleSpeak={handleSpeak}
               handleRegenerate={handleRegenerate}
               setMapQuery={setMapQuery}
@@ -1058,6 +1070,7 @@ function App() {
           setShowAuth={setShowAuth}
           setIsSignUpMode={setIsSignUpMode}
           handleUpgradeClick={handleUpgradeClick}
+          coins={coins}
         />
       )}
       {showAuth && (
@@ -1083,6 +1096,15 @@ function App() {
           isLight={isLight}
           t={t}
           onClose={() => setShowPay(false)}
+        />
+      )}
+      {showBuyCoins && (
+        <BuyCoinsModal
+          styles={styles}
+          isLight={isLight}
+          t={t}
+          currentUser={currentUser}
+          onClose={() => setShowBuyCoins(false)}
         />
       )}
     </div>

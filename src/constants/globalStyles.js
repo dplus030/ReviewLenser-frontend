@@ -21,8 +21,8 @@ export const GLOBAL_STYLES = `
   .rainbow-arc { position: absolute; width: 160vw; height: 160vw; border-radius: 50%; left: 50%; transform: translateX(-50%); top: -118vw; box-shadow: 0 0 0 10px rgba(239,68,68,0.025), 0 0 0 24px rgba(249,115,22,0.022), 0 0 0 38px rgba(234,179,8,0.022), 0 0 0 52px rgba(34,197,94,0.018), 0 0 0 66px rgba(96,165,250,0.022), 0 0 0 80px rgba(168,85,247,0.016); pointer-events: none; }
   .cards-scroll::-webkit-scrollbar { display: none; }
   @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
-  @keyframes taglineFade { 0% { opacity: 0; transform: translateY(8px); } 15% { opacity: 1; transform: translateY(0); } 80% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-8px); } }
-  .tagline-anim { animation: taglineFade 3.8s ease-in-out forwards; }
+  @keyframes taglinePop { 0% { opacity: 0; transform: translateY(16px) scale(0.88); } 22% { opacity: 1; transform: translateY(-7px) scale(1.05); } 38% { transform: translateY(3px) scale(0.98); } 52% { transform: translateY(-2px) scale(1.01); } 62% { opacity: 1; transform: translateY(0) scale(1); } 85% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-10px) scale(0.96); } }
+  .tagline-anim { animation: taglinePop 5.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
   @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
   @keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(20px) scale(0.95); } }
   .toast-in { animation: toastIn 0.3s ease-out forwards; }
