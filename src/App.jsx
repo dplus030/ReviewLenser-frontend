@@ -52,7 +52,7 @@ function App() {
   const isProRef = useRef(false);
   const [isTrial, setIsTrial] = useState(false);
   const [usageCount, setUsageCount] = useState(0);
-  const maxFreeUses = 5;
+  const maxFreeUses = 10;
 
   const [theme, setTheme] = useState(() => getSaved('theme', 'dark'));
   const [fontSize, setFontSize] = useState(() => getSaved('fontSize', 'medium'));

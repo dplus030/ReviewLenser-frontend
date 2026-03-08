@@ -46,7 +46,7 @@ const LandingPage = ({
   };
 
   return (
-    <div style={{ height: '100vh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', backgroundColor: isLight ? '#fcfcfc' : '#050505', color: styles.text, scrollBehavior: 'smooth', position: 'relative' }}>
+    <div style={{ height: '100dvh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', backgroundColor: isLight ? '#fcfcfc' : '#050505', color: styles.text, scrollBehavior: 'smooth', position: 'relative' }}>
       <Toast toast={toast} />
 
       {/* Background */}
@@ -90,7 +90,7 @@ const LandingPage = ({
       </div>
 
       {/* Hero */}
-      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '80px', paddingBottom: '48px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: 'calc(100vh - 70px)', zIndex: 2 }}>
+      <main style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: isMobile ? '30px' : '80px', paddingBottom: '48px', paddingLeft: '20px', paddingRight: '20px', textAlign: 'center', minHeight: 'calc(100dvh - 70px)', zIndex: 2 }}>
         <div className="fade-in-up" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: isLight ? '#fef3c7' : '#001a33', color: styles.accent, borderRadius: '30px', fontSize: '13px', fontWeight: 'bold', marginBottom: '24px', border: `1px solid ${styles.accent}40` }}>
           <span style={{ width: '8px', height: '8px', backgroundColor: styles.accent, borderRadius: '50%', display: 'inline-block' }}></span>
           {t.badge}
@@ -138,7 +138,7 @@ const LandingPage = ({
                 { icon: <Icons.Briefcase />, title: t.feat6Title, desc: t.feat6Desc },
                 { icon: <Icons.Zap />, title: t.feat7Title, desc: t.feat7Desc }
               ].map((feat, i) => (
-                <div key={i} style={{ flex: '0 0 min(85vw, 340px)', scrollSnapAlign: 'start', padding: '40px 30px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,25,0.75)', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.07)'}`, boxShadow: isLight ? '0 10px 40px rgba(0,0,0,0.06)' : '0 10px 40px rgba(0,0,0,0.5)', textAlign: 'left', backdropFilter: 'blur(12px)' }}>
+                <div key={i} style={{ flex: '0 0 min(85vw, 340px)', scrollSnapAlign: 'start', padding: isMobile ? '24px 20px' : '40px 30px', backgroundColor: isLight ? 'rgba(255,255,255,0.85)' : 'rgba(20,20,25,0.75)', borderRadius: '24px', border: `1px solid ${isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.07)'}`, boxShadow: isLight ? '0 10px 40px rgba(0,0,0,0.06)' : '0 10px 40px rgba(0,0,0,0.5)', textAlign: 'left', backdropFilter: 'blur(12px)' }}>
                   <div style={{ width: '60px', height: '60px', backgroundColor: `${styles.accent}18`, color: styles.accent, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>{feat.icon}</div>
                   <h3 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '900' }}>{feat.title}</h3>
                   <p style={{ color: isLight ? '#666' : '#aaa', lineHeight: '1.7', fontSize: '1.05rem' }}>{feat.desc}</p>

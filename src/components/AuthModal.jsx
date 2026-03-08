@@ -17,7 +17,7 @@ const AuthModal = ({ styles, isLight, t, authEmail, setAuthEmail, authPassword, 
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
     >
-      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: '40px', borderRadius: '24px', width: '90%', maxWidth: '380px', border: `1px solid ${styles.border}`, textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: 'clamp(20px, 5vw, 40px)', borderRadius: '24px', width: '90%', maxWidth: '380px', maxHeight: '90dvh', overflowY: 'auto', border: `1px solid ${styles.border}`, textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
         <h2 style={{ marginTop: 0, marginBottom: '10px' }}>{isSignUpMode ? t.authTitleSignup : t.authTitleLogin}</h2>
         <p style={{ color: isLight ? '#666' : '#aaa', marginBottom: '30px', fontSize: '14px' }}>{t.authDesc}</p>
         <input

@@ -13,6 +13,12 @@ const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, usageCoun
           </div>
         </div>
       )}
+      {isMobile && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }} onClick={() => setView('landing')}>
+          <div style={{ width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
+          {isPro && <span style={{ backgroundColor: styles.accent, color: 'white', padding: '1px 5px', borderRadius: '5px', fontSize: '11px', fontWeight: 900, letterSpacing: '1px' }}>PRO</span>}
+        </div>
+      )}
       {currentUser && (
         <div style={{ display: 'flex', gap: '6px', marginLeft: '4px' }}>
           <button
