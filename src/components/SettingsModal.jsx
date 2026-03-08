@@ -29,7 +29,7 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center', zIndex: 10000 }}
     >
-      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: isMobile ? '20px 16px' : '30px', borderRadius: isMobile ? '20px 20px 0 0' : '24px', width: isMobile ? '100%' : '90%', maxWidth: isMobile ? '100%' : '360px', maxHeight: '90dvh', overflowY: 'auto', border: `1px solid ${styles.border}`, color: styles.text, display: 'flex', flexDirection: 'column', gap: '15px', paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : '30px', boxSizing: 'border-box' }}>
+      <div className="fade-in-up" style={{ backgroundColor: styles.panel, padding: isMobile ? '20px 16px' : '30px', borderRadius: isMobile ? '20px 20px 0 0' : '24px', width: isMobile ? '100%' : '90%', maxWidth: isMobile ? '100%' : '360px', maxHeight: '90dvh', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', border: `1px solid ${styles.border}`, color: styles.text, display: 'flex', flexDirection: 'column', gap: '15px', paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : '30px', boxSizing: 'border-box' }}>
         <h3 style={{ marginTop: 0, marginBottom: '10px', textAlign: 'center' }}>{t.settings}</h3>
         {isMobile && (
           <div style={{ padding: '15px', backgroundColor: styles.bg, borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
