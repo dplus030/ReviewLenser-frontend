@@ -840,6 +840,11 @@ function App() {
                   handleUpgradeClick={handleUpgradeClick}
                   isMobile={true}
                   onToggleMap={() => setMobileTab('map')}
+                  currentUser={currentUser}
+                  onShowHistory={() => setShowConvPanel(true)}
+                  onNewChat={startNewChat}
+                  onShowWishlist={() => setShowWishlist(true)}
+                  wishlistCount={wishlist.length}
                 />
                 <ChatArea
                   messages={messages}

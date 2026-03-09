@@ -157,67 +157,87 @@ const ControlBar = ({
     </>
   );
 
+  const iconBtn = (onClick, active, children, badge, title) => (
+    <button onClick={onClick} title={title} style={{ position: 'relative', flexShrink: 0, width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: `1px solid ${active ? styles.accent : styles.border}`, backgroundColor: active ? `${styles.accent}18` : 'transparent', color: active ? styles.accent : styles.text, cursor: 'pointer' }}>
+      {children}
+      {badge > 0 && <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: styles.accent, color: '#fff', borderRadius: '50%', width: '13px', height: '13px', fontSize: '8px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{badge > 9 ? '9+' : badge}</span>}
+    </button>
+  );
+
   if (isMobile) {
     return (
       <div style={{ flexShrink: 0, backgroundColor: styles.panel, padding: '8px 12px 10px', borderRadius: '12px', marginBottom: '8px', border: `1px solid ${styles.border}`, width: '100%', boxSizing: 'border-box' }}>
-        {/* Row 1: Mode tabs */}
-        <div style={{ display: 'flex', gap: '4px', marginBottom: mode === 'recommend' ? '8px' : '0' }}>
-          <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
-          <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
+        {/* Row 1: Mode tabs + action shortcuts + expand toggle */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
+            <button onClick={() => setMode('recommend')} style={getTabStyle(mode === 'recommend')}>{t.tabRec}</button>
+            <button onClick={() => setMode('evaluate')} style={getTabStyle(mode === 'evaluate')}>{t.tabEval}</button>
+          </div>
+          {/* History */}
+          {currentUser && iconBtn(onShowHistory, false, <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h6l1 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>, 0, t.convHistory)}
+          {/* New chat */}
+          {currentUser && iconBtn(onNewChat, false, <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>, 0, t.convNewChat)}
+          {/* Wishlist (Pro only) */}
+          {currentUser && isPro && iconBtn(onShowWishlist, false, <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, wishlistCount, t.wishlistTitle)}
+          {/* Expand/collapse with chevron (not gear) */}
+          <button
+            onClick={() => setMobileExpanded(v => !v)}
+            style={{ flexShrink: 0, width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: `1px solid ${mobileExpanded ? styles.accent : styles.border}`, backgroundColor: mobileExpanded ? `${styles.accent}18` : 'transparent', color: mobileExpanded ? styles.accent : styles.text, cursor: 'pointer' }}
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: mobileExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
         </div>
 
-        {/* Row 2: Recommend settings — always visible */}
-        {mode === 'recommend' && (
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={handleLocToggle}
-              style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 10px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: useCurrentLoc ? styles.accent : 'transparent', color: useCurrentLoc ? '#fff' : styles.text, cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', flexShrink: 0, whiteSpace: 'nowrap' }}
-            >
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {useCurrentLoc
-                  ? <><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></>
-                  : <><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>
-                }
-              </svg>
-              {useCurrentLoc ? t.locCurr : t.locCust}
-              {!isPro && !useCurrentLoc && <Icons.Lock />}
-            </button>
-
-            {!useCurrentLoc && (
-              <input
-                placeholder={t.locCustPh}
-                value={customLoc}
-                onChange={(e) => { setCustomLoc(e.target.value); localStorage.setItem('customLoc', e.target.value); }}
-                onBlur={(e) => { if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } }}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } } }}
-                style={{ ...miniInput, flex: '1 1 80px', fontSize: '12px', padding: '6px 8px' }}
-              />
+        {/* Expandable settings panel */}
+        {mobileExpanded && (
+          <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: `1px solid ${styles.border}` }}>
+            {mode === 'recommend' && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                <button
+                  onClick={handleLocToggle}
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 10px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: useCurrentLoc ? styles.accent : 'transparent', color: useCurrentLoc ? '#fff' : styles.text, cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', flexShrink: 0, whiteSpace: 'nowrap' }}
+                >
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {useCurrentLoc ? <><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></> : <><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>}
+                  </svg>
+                  {useCurrentLoc ? t.locCurr : t.locCust}
+                  {!isPro && !useCurrentLoc && <Icons.Lock />}
+                </button>
+                {!useCurrentLoc && (
+                  <input placeholder={t.locCustPh} value={customLoc}
+                    onChange={(e) => { setCustomLoc(e.target.value); localStorage.setItem('customLoc', e.target.value); }}
+                    onBlur={(e) => { if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (e.target.value) { setMapQuery(e.target.value); setMapInputValue(e.target.value); } } }}
+                    style={{ ...miniInput, flex: '1 1 80px', fontSize: '12px', padding: '6px 8px' }} />
+                )}
+                <div style={{ ...selectWrapperStyle, flex: '1 1 90px', minWidth: '90px', fontSize: '12px' }}>
+                  <div style={{ position: 'absolute', left: '8px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.Tag /></div>
+                  <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '26px', fontSize: '12px' }}>
+                    <option value="不限種類">{t.catNone}</option>
+                    <option value="找餐廳">{t.catRest}</option>
+                    <option value="找飯店">{t.catHotel}</option>
+                    <option value="找景點">{t.catAttr}</option>
+                    <option value="找商店">{t.catShop}</option>
+                    <option value="自訂分類...">{t.catCustom}</option>
+                  </select>
+                  <div style={{ position: 'absolute', right: '6px', pointerEvents: 'none', fontSize: '9px', opacity: 0.5 }}>▼</div>
+                </div>
+                {category === '自訂分類...' && (
+                  <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 70px', fontSize: '12px', padding: '6px 8px' }} />
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: '2 1 110px', padding: '5px 8px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isLight ? '#f5f5f5' : '#2a2a2a', boxSizing: 'border-box' }}>
+                  <input type="range" min="0" max={DISTANCE_STEPS.length - 1} step="1" value={stepIdx}
+                    onChange={(e) => { const km = DISTANCE_STEPS[parseInt(e.target.value)]; setDistanceKm(km); localStorage.setItem('distanceKm', String(km)); }}
+                    style={{ flex: 1, accentColor: styles.accent, cursor: 'pointer', margin: 0 }} />
+                  <span style={{ fontSize: '11px', color: styles.text, whiteSpace: 'nowrap', minWidth: '30px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
+                </div>
+                <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0 }}>
+                  {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
+                </button>
+              </div>
             )}
-
-            <div style={{ ...selectWrapperStyle, flex: '1 1 90px', minWidth: '90px', fontSize: '12px' }}>
-              <div style={{ position: 'absolute', left: '8px', color: isLight ? '#555' : '#aaa', pointerEvents: 'none', display: 'flex' }}><Icons.Tag /></div>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ ...pureSelectStyle, paddingLeft: '26px', fontSize: '12px' }}>
-                <option value="不限種類">{t.catNone}</option>
-                <option value="找餐廳">{t.catRest}</option>
-                <option value="找飯店">{t.catHotel}</option>
-                <option value="找景點">{t.catAttr}</option>
-                <option value="找商店">{t.catShop}</option>
-                <option value="自訂分類...">{t.catCustom}</option>
-              </select>
-              <div style={{ position: 'absolute', right: '6px', pointerEvents: 'none', fontSize: '9px', opacity: 0.5 }}>▼</div>
-            </div>
-            {category === '自訂分類...' && (
-              <input placeholder={t.catCustom} value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} style={{ ...miniInput, flex: '1 1 70px', fontSize: '12px', padding: '6px 8px' }} />
-            )}
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: '2 1 110px', padding: '5px 8px', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: isLight ? '#f5f5f5' : '#2a2a2a', boxSizing: 'border-box' }}>
-              <input
-                type="range" min="0" max={DISTANCE_STEPS.length - 1} step="1" value={stepIdx}
-                onChange={(e) => { const km = DISTANCE_STEPS[parseInt(e.target.value)]; setDistanceKm(km); localStorage.setItem('distanceKm', String(km)); }}
-                style={{ flex: 1, accentColor: styles.accent, cursor: 'pointer', margin: 0 }}
-              />
-              <span style={{ fontSize: '11px', color: styles.text, whiteSpace: 'nowrap', minWidth: '30px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
-            </div>
           </div>
         )}
       </div>

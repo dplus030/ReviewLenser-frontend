@@ -127,9 +127,13 @@ const LandingPage = ({
           </button>
           <div style={{ width: '1px', height: '24px', backgroundColor: styles.border }}></div>
           {currentUser ? (
-            <button onClick={handleEnterApp} style={{ padding: '8px 24px', fontSize: '0.95rem', backgroundColor: styles.text, color: styles.bg, border: 'none', borderRadius: '30px', cursor: 'pointer', fontWeight: 'bold' }}>{t.enterSystem}</button>
+            isMobile
+              ? <button onClick={handleEnterApp} title={t.enterSystem} style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '50%', cursor: 'pointer', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              : <button onClick={handleEnterApp} style={{ padding: '8px 24px', fontSize: '0.95rem', backgroundColor: styles.text, color: styles.bg, border: 'none', borderRadius: '30px', cursor: 'pointer', fontWeight: 'bold' }}>{t.enterSystem}</button>
           ) : (
-            <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); }} style={{ padding: '8px 20px', fontSize: '0.95rem', backgroundColor: 'transparent', color: styles.text, border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>{t.login}</button>
+            <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); }} style={{ padding: isMobile ? '7px 14px' : '8px 20px', fontSize: '0.95rem', backgroundColor: 'transparent', color: styles.text, border: `1px solid ${styles.border}`, borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>{t.login}</button>
           )}
         </div>
       </div>
