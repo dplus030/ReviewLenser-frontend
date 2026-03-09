@@ -910,22 +910,20 @@ function App() {
               />
             )}
           </div>
-          {/* Mobile bottom tab bar */}
+          {/* Mobile bottom tab bar — 4 tabs */}
           <div style={{ flexShrink: 0, display: 'flex', borderTop: `1px solid ${styles.border}`, backgroundColor: styles.panel, paddingBottom: 'env(safe-area-inset-bottom)' }}>
-            <button
-              onClick={() => setMobileTab('chat')}
-              style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'chat' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'chat' ? 'bold' : 'normal' }}
-            >
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              <span>{t.navChat}</span>
-            </button>
-            <button
-              onClick={() => setMobileTab('map')}
-              style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === 'map' ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === 'map' ? 'bold' : 'normal' }}
-            >
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-              <span>{t.navMap}</span>
-            </button>
+            {[
+              { key: 'chat', label: t.navChat, icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, action: () => setMobileTab('chat') },
+              { key: 'map',  label: t.navMap,  icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>, action: () => setMobileTab('map') },
+              { key: 'history', label: t.navHistory, icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3h6l1 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>, action: () => { setMobileTab('chat'); setShowConvPanel(true); } },
+              { key: 'wishlist', label: t.navWishlist, badge: wishlist.length, icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, action: () => { setMobileTab('chat'); setShowWishlist(true); } },
+            ].map(({ key, label, icon, action, badge }) => (
+              <button key={key} onClick={action} style={{ flex: 1, padding: '10px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: mobileTab === key ? styles.accent : (isLight ? '#888' : '#aaa'), cursor: 'pointer', gap: '3px', fontSize: '10px', fontWeight: mobileTab === key ? 'bold' : 'normal', position: 'relative' }}>
+                {icon}
+                <span>{label}</span>
+                {badge > 0 && <span style={{ position: 'absolute', top: '6px', right: 'calc(50% - 18px)', backgroundColor: styles.accent, color: '#fff', borderRadius: '50%', width: '14px', height: '14px', fontSize: '9px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{badge > 9 ? '9+' : badge}</span>}
+              </button>
+            ))}
           </div>
         </>
       ) : (

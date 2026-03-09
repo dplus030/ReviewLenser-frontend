@@ -15,39 +15,36 @@ const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, coins, ha
       )}
       {isMobile && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }} onClick={() => setView('landing')}>
-          <div style={{ width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
+          <div style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icons.Logo isLight={isLight} /></div>
+          <span className="brand-font" style={{ fontSize: '1.1rem' }}>Lenser</span>
           {isPro && <span style={{ backgroundColor: styles.accent, color: 'white', padding: '1px 5px', borderRadius: '5px', fontSize: '11px', fontWeight: 900, letterSpacing: '1px' }}>PRO</span>}
         </div>
       )}
     </div>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-      {isPro && currentUser && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: isMobile ? '14px' : '16px', color: isLight ? '#555' : '#bbb', fontWeight: 'bold' }}>🪙 {coins}</span>
-          <button
-            onClick={onBuyCoins}
-            style={{ padding: '2px 8px', borderRadius: '16px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}
-          >
-            +
-          </button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '12px' }}>
+      {/* 幣數：登入用戶都顯示 */}
+      {currentUser && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ fontSize: isMobile ? '13px' : '16px', color: isLight ? '#555' : '#bbb', fontWeight: 'bold' }}>🪙 {coins}</span>
+          {isPro && (
+            <button onClick={onBuyCoins} style={{ padding: '2px 8px', borderRadius: '16px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>+</button>
+          )}
         </div>
       )}
       {!isPro && !isMobile && (
-        <button
-          onClick={handleUpgradeClick}
-          style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}
-        >
-          {t.upgrade}
-        </button>
+        <button onClick={handleUpgradeClick} style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.upgrade}</button>
       )}
       {!isMobile && (
         currentUser
           ? <button onClick={handleLogout} style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${styles.border}`, backgroundColor: 'transparent', color: styles.text, fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.logout}</button>
           : <button onClick={() => { setIsSignUpMode(false); setShowAuth(true); }} style={{ padding: '6px 16px', borderRadius: '20px', border: 'none', backgroundColor: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>{t.login}</button>
       )}
-<button onClick={() => setView('settings')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, display: 'flex', alignItems: 'center' }}>
-        <Icons.Settings />
-      </button>
+      {/* 設定：只在桌面版顯示，手機版從設定 tab 進入 */}
+      {!isMobile && (
+        <button onClick={() => setView('settings')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, display: 'flex', alignItems: 'center' }}>
+          <Icons.Settings />
+        </button>
+      )}
     </div>
   </div>
 );
