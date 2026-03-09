@@ -13,14 +13,23 @@ const LOADING_PHRASES = {
 };
 
 const LoadingText = ({ mode, lang }) => {
-  const key = lang === 'en' ? (mode === 'recommend' ? 'recEn' : 'evalEn') : (mode === 'recommend' ? 'rec' : 'eval');
+  const key = lang === 'en' ? (mode === 'recommend' ? 'recEn' : 'evalEn') : lang === 'ja' ? (mode === 'recommend' ? 'recJa' : 'evalJa') : (mode === 'recommend' ? 'rec' : 'eval');
   const phrases = LOADING_PHRASES[key];
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => setIdx(i => (i + 1) % phrases.length), 1800);
     return () => clearInterval(timer);
   }, [phrases.length]);
-  return <span>{phrases[idx]}</span>;
+  const text = phrases[idx];
+  return (
+    <span style={{ display: 'inline-block' }}>
+      {[...text].map((char, i) => (
+        <span key={`${idx}-${i}`} style={{ display: 'inline-block', animation: 'charBounce 1s ease-in-out infinite', animationDelay: `${i * 0.06}s` }}>
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))}
+    </span>
+  );
 };
 
 const ChatArea = ({ messages, styles, isLight, showMap, loading, mode, t, lang, isMobile, speakingIndex, handleSpeak, handleRegenerate, setMapQuery, setMapInputValue, chatEndRef }) => (

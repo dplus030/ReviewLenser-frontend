@@ -68,7 +68,7 @@ function App() {
 
   const savedCat = getSaved('defaultCategory', '找餐廳');
   const [defaultCategory] = useState(() => (savedCat === '無' || savedCat === 'None' || savedCat === '餐廳') ? '找餐廳' : savedCat);
-  const [defaultTone] = useState(() => getSaved('defaultTone', '毒舌評論家'));
+  const [defaultTone] = useState(() => getSaved('defaultTone', '嚴謹專業'));
 
   const [mode, setMode] = useState('recommend');
   const [category, setCategory] = useState(defaultCategory);
@@ -419,7 +419,7 @@ function App() {
 
   const handleToneChange = (e) => {
     const val = e.target.value;
-    if (val === '自訂...' && !isPro) { handleUpgradeClick(); setToneMode('毒舌評論家'); return; }
+    if (val === '自訂...' && !isPro) { handleUpgradeClick(); setToneMode('嚴謹專業'); return; }
     setToneMode(val);
   };
 

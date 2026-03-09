@@ -23,12 +23,12 @@ const AppHeader = ({ styles, isLight, t, isMobile, isPro, currentUser, coins, ha
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
       {isPro && currentUser && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: isMobile ? '12px' : '13px', color: isLight ? '#555' : '#bbb', fontWeight: 'bold' }}>🪙 {coins}</span>
+          <span style={{ fontSize: isMobile ? '14px' : '16px', color: isLight ? '#555' : '#bbb', fontWeight: 'bold' }}>🪙 {coins}</span>
           <button
             onClick={onBuyCoins}
-            style={{ padding: '4px 10px', borderRadius: '16px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+            style={{ padding: '2px 8px', borderRadius: '16px', border: `1px solid ${styles.accent}`, backgroundColor: 'transparent', color: styles.accent, fontWeight: 'bold', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}
           >
-            {t.buyCoinsBtn}
+            +
           </button>
         </div>
       )}
