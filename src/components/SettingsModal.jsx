@@ -74,6 +74,7 @@ const SettingsModal = ({ styles, isLight, t, lang, setLang, theme, setTheme, fon
               <option value="zh-TW">繁體中文</option>
               <option value="en">English</option>
               <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
             </select>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -12,7 +12,8 @@ const LandingPage = ({
   billingCycle, setBillingCycle,
   authEmail, setAuthEmail, authPassword, setAuthPassword,
   isSignUpMode, setIsSignUpMode, isLoggingIn,
-  handleEmailAuth, handleGoogleLogin, handleEnterApp, handleUpgradeClick
+  handleEmailAuth, handleGoogleLogin, handleEnterApp, handleUpgradeClick,
+  setView
 }) => {
   const taglines = (isLight ? t.taglines : t.taglinesDark) || t.taglines || [];
   const [taglineIdx, setTaglineIdx] = useState(0);
@@ -121,6 +122,7 @@ const LandingPage = ({
             <option value="zh-TW">繁體中文</option>
             <option value="en">English</option>
             <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
           </select>
           <button onClick={() => { const newTheme = isLight ? 'dark' : 'light'; setTheme(newTheme); localStorage.setItem('theme', newTheme); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: styles.text, fontSize: '16px' }}>
             {isLight ? '🌙' : '☀️'}
@@ -256,6 +258,11 @@ const LandingPage = ({
       <footer style={{ flexShrink: 0, padding: '60px 20px', textAlign: 'center', color: isLight ? '#888' : '#555', fontSize: '14px', zIndex: 2 }}>
         <div style={{ color: styles.text, width: '40px', height: '40px', margin: '0 auto 20px' }}><Icons.Logo isLight={isLight} /></div>
         <p className="brand-font">© 2026 Lenser AI. Developed with vision.</p>
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
+          <button onClick={() => setView('terms')} style={{ background: 'none', border: 'none', color: isLight ? '#888' : '#555', cursor: 'pointer', fontSize: '13px', textDecoration: 'underline', padding: 0 }}>Terms & Conditions</button>
+          <button onClick={() => setView('privacy')} style={{ background: 'none', border: 'none', color: isLight ? '#888' : '#555', cursor: 'pointer', fontSize: '13px', textDecoration: 'underline', padding: 0 }}>Privacy Policy</button>
+          <button onClick={() => setView('refund')} style={{ background: 'none', border: 'none', color: isLight ? '#888' : '#555', cursor: 'pointer', fontSize: '13px', textDecoration: 'underline', padding: 0 }}>Refund Policy</button>
+        </div>
       </footer>
 
       {showAuth && (

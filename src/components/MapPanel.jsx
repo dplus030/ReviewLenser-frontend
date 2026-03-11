@@ -109,28 +109,13 @@ function MapInner({ mapQuery, places, location, useCurrentLoc, styles, onPinClic
 }
 
 // Fallback iframe when no VITE_GOOGLE_MAPS_API_KEY
-function FallbackIframe({ mapQuery, lang, isLight, showRoute, location, useCurrentLoc, customLoc }) {
-  const getRouteStartPoint = () => {
-    if (useCurrentLoc && location?.lat) return `${location.lat},${location.lng}`;
-    if (!useCurrentLoc && customLoc?.trim()) return customLoc.trim();
-    return '';
-  };
-  const langCode = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja' : 'en';
+function FallbackIframe({ mapQuery, lang, isLight }) {
+  const langCode = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja' : lang === 'ko' ? 'ko' : 'en';
   const mapBase = `https://maps.google.com/maps?hl=${langCode}&`;
   const safeQuery = mapQuery || '台灣';
-  let src;
-  if (safeQuery === '台灣') {
-    src = `${mapBase}q=${encodeURIComponent('台灣')}&z=7&output=embed`;
-  } else if (showRoute) {
-    const start = getRouteStartPoint();
-    if (start && safeQuery !== start) {
-      src = `${mapBase}saddr=${encodeURIComponent(start)}&daddr=${encodeURIComponent(safeQuery)}&output=embed`;
-    } else {
-      src = `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
-    }
-  } else {
-    src = `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
-  }
+  const src = safeQuery === '台灣'
+    ? `${mapBase}q=${encodeURIComponent('台灣')}&z=7&output=embed`
+    : `${mapBase}q=${encodeURIComponent(safeQuery)}&z=16&output=embed`;
   return (
     <iframe
       src={src}
@@ -147,7 +132,7 @@ const MapPanel = ({
   isDragging, setIsDragging,
   isPro, mapInputValue, setMapInputValue, setMapQuery, mapQuery,
   onAnalyzePlace, onAddToWishlist, isInWishlist, places,
-  location, showRoute, useCurrentLoc, customLoc,
+  location, useCurrentLoc, customLoc,
 }) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [clickedLocation, setClickedLocation] = useState(null);
@@ -158,22 +143,7 @@ const MapPanel = ({
     setClickedLocation({ lat, lng });
   };
 
-  const getRouteStartPoint = () => {
-    if (useCurrentLoc && location?.lat) return `${location.lat},${location.lng}`;
-    if (!useCurrentLoc && customLoc?.trim()) return customLoc.trim();
-    return '';
-  };
-
   const isValidStoreName = mapQuery && mapQuery !== '台灣' && !/^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(mapQuery);
-
-  const routeUrl = (() => {
-    if (!showRoute || !isValidStoreName) return null;
-    const start = getRouteStartPoint();
-    if (start) {
-      return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(start)}&destination=${encodeURIComponent(mapQuery)}`;
-    }
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`;
-  })();
 
   const defaultCenter = location?.lat
     ? { lat: location.lat, lng: location.lng }
@@ -194,7 +164,7 @@ const MapPanel = ({
         {/* Map area */}
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
           {MAPS_API_KEY ? (
-            <APIProvider apiKey={MAPS_API_KEY} language="zh-TW">
+            <APIProvider key={lang} apiKey={MAPS_API_KEY} language={lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja' : lang === 'ko' ? 'ko' : 'en'}>
               <Map
                 defaultCenter={defaultCenter}
                 defaultZoom={defaultZoom}
@@ -223,24 +193,7 @@ const MapPanel = ({
               mapQuery={mapQuery}
               lang={lang}
               isLight={isLight}
-              showRoute={showRoute}
-              location={location}
-              useCurrentLoc={useCurrentLoc}
-              customLoc={customLoc}
             />
-          )}
-
-          {/* Route link overlay */}
-          {routeUrl && (
-            <a
-              href={routeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={t.mapOpenRoute}
-              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 20, backgroundColor: styles.accent, color: '#fff', width: '36px', height: '36px', borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
-            </a>
           )}
 
           {/* Selected place tooltip */}

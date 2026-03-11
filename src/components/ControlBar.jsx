@@ -9,7 +9,6 @@ const ControlBar = ({
   useCurrentLoc, setUseCurrentLoc, customLoc, setCustomLoc, setMapQuery, setMapInputValue,
   category, setCategory, customCategory, setCustomCategory,
   distanceKm, setDistanceKm,
-  showRoute, setShowRoute,
   handleUpgradeClick, isMobile, onToggleMap,
   currentUser, onShowHistory, onNewChat, onShowWishlist, wishlistCount
 }) => {
@@ -88,9 +87,6 @@ const ControlBar = ({
   const settingsPanel = (
     <>
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: mode === 'recommend' ? '8px' : '0' }}>
-        <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0 }}>
-          {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
-        </button>
         <button onClick={onToggleMap} title={showMap ? t.mapOff : t.mapOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showMap ? styles.accent : 'transparent', color: showMap ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0 }}>
           {showMap ? <Icons.Map /> : <Icons.MapOff />}
         </button>
@@ -233,9 +229,6 @@ const ControlBar = ({
                     style={{ flex: 1, accentColor: styles.accent, cursor: 'pointer', margin: 0 }} />
                   <span style={{ fontSize: '11px', color: styles.text, whiteSpace: 'nowrap', minWidth: '30px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
                 </div>
-                <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0 }}>
-                  {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
-                </button>
               </div>
             )}
           </div>
@@ -335,10 +328,6 @@ const ControlBar = ({
             />
             <span style={{ fontSize: '12px', color: styles.text, whiteSpace: 'nowrap', minWidth: '36px', textAlign: 'right', fontWeight: 'bold' }}>{distanceKm}km</span>
           </div>
-          {/* Route toggle */}
-          <button onClick={() => setShowRoute(!showRoute)} title={showRoute ? t.routeOff : t.routeOn} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', border: `1px solid ${styles.border}`, backgroundColor: showRoute ? styles.accent : 'transparent', color: showRoute ? '#fff' : styles.text, cursor: 'pointer', flexShrink: 0, marginLeft: 'auto' }}>
-            {showRoute ? <Icons.Route /> : <Icons.RouteOff />}
-          </button>
         </div>
       )}
     </div>

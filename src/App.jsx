@@ -23,6 +23,9 @@ import PayModal from './components/PayModal';
 import BuyCoinsModal from './components/BuyCoinsModal';
 import SettingsModal from './components/SettingsModal';
 import LandingPage from './pages/LandingPage';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Refund from './pages/Refund';
 import ConversationPanel from './components/ConversationPanel';
 import WishlistPanel from './components/WishlistPanel';
 
@@ -104,7 +107,6 @@ function App() {
   const [pendingAnalyze, setPendingAnalyze] = useState(false);
 
   const [showMap, setShowMap] = useState(() => getSaved('showMap', 'true') === 'true');
-  const [showRoute, setShowRoute] = useState(() => getSaved('showRoute', 'true') === 'true');
   const [mobileTab, setMobileTab] = useState('chat'); // 'chat' | 'map'
 
   // Conversation history
@@ -655,7 +657,9 @@ function App() {
           setMapInputValue(data.map_keyword);
         }
         if (data.places && data.places.length > 0) setMapPlaces(data.places);
-        setCoins(prev => Math.max(0, prev - 1));
+        if (typeof data.consumed_tokens === 'number') {
+          setCoins(prev => Math.max(0, prev - data.consumed_tokens));
+        }
       } else {
         setMessages(prev => [...prev, { role: 'ai', content: data.error || "Unknown Error", isNew: true }]);
       }
@@ -700,6 +704,33 @@ function App() {
   };
 
 
+  if (view === 'terms') {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
+        <Terms isLight={isLight} isMobile={isMobile} setView={setView} />
+      </>
+    );
+  }
+
+  if (view === 'privacy') {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
+        <Privacy isLight={isLight} isMobile={isMobile} setView={setView} />
+      </>
+    );
+  }
+
+  if (view === 'refund') {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
+        <Refund isLight={isLight} isMobile={isMobile} setView={setView} />
+      </>
+    );
+  }
+
   if (view === 'landing') {
     return (
       <>
@@ -731,6 +762,7 @@ function App() {
           handleGoogleLogin={handleGoogleLogin}
           handleEnterApp={handleEnterApp}
           handleUpgradeClick={handleUpgradeClick}
+          setView={setView}
         />
       </>
     );
@@ -835,8 +867,6 @@ function App() {
                   setCustomCategory={setCustomCategory}
                   distanceKm={distanceKm}
                   setDistanceKm={setDistanceKm}
-                  showRoute={showRoute}
-                  setShowRoute={setShowRoute}
                   handleUpgradeClick={handleUpgradeClick}
                   isMobile={true}
                   onToggleMap={() => setMobileTab('map')}
@@ -909,7 +939,6 @@ function App() {
                 isInWishlist={isInWishlist}
                 places={mapPlaces}
                 location={location}
-                showRoute={showRoute}
                 useCurrentLoc={useCurrentLoc}
                 customLoc={customLoc}
               />
@@ -960,7 +989,6 @@ function App() {
               isInWishlist={isInWishlist}
               places={mapPlaces}
               location={location}
-              showRoute={showRoute}
               useCurrentLoc={useCurrentLoc}
               customLoc={customLoc}
             />
@@ -995,8 +1023,6 @@ function App() {
               setCustomCategory={setCustomCategory}
               distanceKm={distanceKm}
               setDistanceKm={setDistanceKm}
-              showRoute={showRoute}
-              setShowRoute={setShowRoute}
               handleUpgradeClick={handleUpgradeClick}
               isMobile={false}
               onToggleMap={() => { const newVal = !showMap; setShowMap(newVal); localStorage.setItem('showMap', newVal); }}
