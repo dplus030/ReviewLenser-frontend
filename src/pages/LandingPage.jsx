@@ -232,7 +232,16 @@ const LandingPage = ({
               <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: styles.accent, color: '#fff', padding: '5px 15px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', letterSpacing: '1px' }}>PRO VERSION</div>
               <h3 style={{ fontSize: '1.5rem', color: styles.accent, margin: '0 0 10px 0' }}>{t.proPlan}</h3>
               <div style={{ marginBottom: '30px' }}>
-                <div style={{ fontSize: '3rem', fontWeight: '900' }}>$299 <span style={{ fontSize: '1rem', color: '#888' }}>NTD / {t.mo}</span></div>
+                <div style={{ marginBottom: '8px' }}>
+                  <span style={{ background: 'linear-gradient(90deg,#f97316,#ef4444)', color: '#fff', padding: '4px 12px', borderRadius: '99px', fontSize: '12px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+                    {t.earlyBirdBadge}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '1.6rem', color: '#aaa', textDecoration: 'line-through', fontWeight: '700' }}>$299</span>
+                  <span style={{ fontSize: '3rem', fontWeight: '900', color: '#f97316' }}>$199</span>
+                  <span style={{ fontSize: '1rem', color: '#888' }}>NTD / {t.mo}</span>
+                </div>
                 <div style={{ fontSize: '0.95rem', color: isLight ? '#555' : '#aaa', marginTop: '4px' }}>🪙 {t.proSubtitle}</div>
               </div>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 auto 0', display: 'flex', flexDirection: 'column', gap: '15px', color: isLight ? '#333' : '#eee', fontSize: '1.1rem' }}>
@@ -247,7 +256,7 @@ const LandingPage = ({
               {isPro ? (
                 <div style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: `2px solid ${styles.accent}`, background: 'transparent', color: styles.accent, fontWeight: 'bold', textAlign: 'center', fontSize: '1rem', boxSizing: 'border-box' }}>{t.alreadyProMsg}</div>
               ) : (
-                <button onClick={() => { if (!currentUser) setShowAuth(true); else setShowPay(true); }} style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: 'none', background: styles.accent, color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>{t.btnPro}</button>
+                <button onClick={() => { if (!currentUser) setShowAuth(true); else setShowPay(true); }} style={{ marginTop: '40px', width: '100%', padding: '15px', borderRadius: '12px', border: 'none', background: '#f97316', color: '#fff', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 15px rgba(249,115,22,0.4)' }}>{t.btnPayEarlyBird} — 199 NTD / {t.mo}</button>
               )}
             </div>
           </div>

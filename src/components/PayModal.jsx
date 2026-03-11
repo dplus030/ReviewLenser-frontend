@@ -1,14 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const MONTHLY_URL = 'https://reviewlenser.lemonsqueezy.com/checkout/buy/c0b189da-9da3-4956-807d-360397e63394';
-const YEARLY_URL  = 'https://reviewlenser.lemonsqueezy.com/checkout/buy/392784e6-f54c-4af5-9628-427c0d8a0352';
+const MONTHLY_URL            = import.meta.env.VITE_MONTHLY_URL;
+const YEARLY_URL             = import.meta.env.VITE_YEARLY_URL;
+const EARLY_BIRD_MONTHLY_URL = import.meta.env.VITE_EARLY_BIRD_MONTHLY_URL;
+const EARLY_BIRD_YEARLY_URL  = import.meta.env.VITE_EARLY_BIRD_YEARLY_URL;
+const API_URL                = import.meta.env.VITE_API_URL;
 
 const PayModal = ({ styles, isLight, t, onClose }) => {
   const [plan, setPlan] = useState('monthly');
+  const [earlyBird, setEarlyBird] = useState({ active: true, remaining: 100 });
   const isYearly = plan === 'yearly';
 
-  const monthlyPrice = 299;
-  const yearlyTotal  = 2988; // 249/mo × 12
+  useEffect(() => {
+    fetch(`${API_URL}/api/early-bird-status`)
+      .then((r) => r.json())
+      .then((d) => setEarlyBird({ active: d.active, remaining: d.remaining }))
+      .catch(() => {}); // 若 API 失敗，保持顯示早鳥（不影響購買流程）
+  }, []);
+
+  const monthlyOrigPrice = 299;
+  const monthlyPrice     = earlyBird.active ? 199  : 299;
+  const yearlyOrigTotal  = 2988;
+  const yearlyTotal      = earlyBird.active ? 1990 : 2988;
 
   return (
     <div
@@ -47,12 +60,17 @@ const PayModal = ({ styles, isLight, t, onClose }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <span style={{ color: styles.text, fontSize: '15px', fontWeight: 'bold', display: 'flex', alignItems: 'baseline', gap: '4px' }}>🪙 <span style={{ fontSize: '26px', fontWeight: '900' }}>1500</span> {t.coinsLabel}</span>
             <div style={{ textAlign: 'right' }}>
-              <span style={{ fontSize: '24px', fontWeight: '900', color: styles.text }}>
+              {earlyBird.active && (
+                <div style={{ fontSize: '13px', color: '#aaa', textDecoration: 'line-through', marginBottom: '2px' }}>
+                  {isYearly ? `${yearlyOrigTotal} NTD` : `${monthlyOrigPrice} NTD`}
+                </div>
+              )}
+              <span style={{ fontSize: '24px', fontWeight: '900', color: earlyBird.active ? '#f97316' : styles.text }}>
                 {isYearly ? yearlyTotal : monthlyPrice}{' '}
                 <span style={{ fontSize: '12px' }}>NTD</span>
               </span>
               <div style={{ fontSize: '11px', color: isLight ? '#999' : '#777' }}>
-                {isYearly ? `249 NTD / ${t.mo}` : `/ ${t.mo}`}
+                {isYearly ? (earlyBird.active ? `166 NTD / ${t.mo}` : `249 NTD / ${t.mo}`) : `/ ${t.mo}`}
               </div>
             </div>
           </div>
@@ -68,14 +86,30 @@ const PayModal = ({ styles, isLight, t, onClose }) => {
           </div>
         </div>
 
+        {earlyBird.active && (
+          <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center' }}>
+            <span style={{ background: 'linear-gradient(90deg,#f97316,#ef4444)', color: '#fff', padding: '5px 14px', borderRadius: '99px', fontSize: '13px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+              {t.earlyBirdBadge}
+            </span>
+            <span style={{ fontSize: '12px', color: isLight ? '#888' : '#aaa' }}>
+              剩 {earlyBird.remaining} 名
+            </span>
+          </div>
+        )}
         <button
           onClick={() => {
-            window.open(isYearly ? YEARLY_URL : MONTHLY_URL);
+            const url = earlyBird.active
+              ? (isYearly ? EARLY_BIRD_YEARLY_URL : EARLY_BIRD_MONTHLY_URL)
+              : (isYearly ? YEARLY_URL : MONTHLY_URL);
+            window.open(url);
             onClose();
           }}
-          style={{ width: '100%', padding: '15px', backgroundColor: styles.accent, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: `0 4px 15px ${styles.accent}40` }}
+          style={{ width: '100%', padding: '15px', backgroundColor: earlyBird.active ? '#f97316' : styles.accent, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: earlyBird.active ? '0 4px 15px rgba(249,115,22,0.4)' : `0 4px 15px ${styles.accent}40` }}
         >
-          {t.btnPay} — {isYearly ? `${yearlyTotal} NTD / ${t.yr}` : `${monthlyPrice} NTD / ${t.mo}`}
+          {earlyBird.active
+            ? (isYearly ? `${t.btnPayEarlyBird} — ${yearlyTotal} NTD / ${t.yr}` : `${t.btnPayEarlyBird} — ${monthlyPrice} NTD / ${t.mo}`)
+            : (isYearly ? `${t.btnPay} — ${yearlyTotal} NTD / ${t.yr}` : `${t.btnPay} — ${monthlyPrice} NTD / ${t.mo}`)
+          }
         </button>
         <button onClick={onClose} style={{ marginTop: '20px', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '13px' }}>{t.back}</button>
       </div>
