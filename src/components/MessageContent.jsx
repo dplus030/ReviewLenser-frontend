@@ -54,6 +54,7 @@ const MessageContent = ({ content, onPlaceClick, isLight }) => {
       {lines.map((line, i) => {
         if (!line.trim()) return <br key={i} />;
         const trimmed = line.trim();
+        if (trimmed.startsWith('#### ')) return <h5 key={i} style={{ margin: '10px 0 4px', fontSize: '14px' }}>{renderLine(trimmed.slice(5), i)}</h5>;
         if (trimmed.startsWith('### ')) return <h4 key={i} style={{ margin: '12px 0 4px', fontSize: '15px' }}>{renderLine(trimmed.slice(4), i)}</h4>;
         if (trimmed.startsWith('## ')) return <h3 key={i} style={{ margin: '14px 0 6px', fontSize: '16px' }}>{renderLine(trimmed.slice(3), i)}</h3>;
         if (trimmed.startsWith('# ')) return <h2 key={i} style={{ margin: '16px 0 8px', fontSize: '18px' }}>{renderLine(trimmed.slice(2), i)}</h2>;

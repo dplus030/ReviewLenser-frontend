@@ -1,10 +1,26 @@
 import { useState, useEffect } from 'react';
 
+// Desktop URLs
 const MONTHLY_URL            = import.meta.env.VITE_MONTHLY_URL;
 const YEARLY_URL             = import.meta.env.VITE_YEARLY_URL;
 const EARLY_BIRD_MONTHLY_URL = import.meta.env.VITE_EARLY_BIRD_MONTHLY_URL;
 const EARLY_BIRD_YEARLY_URL  = import.meta.env.VITE_EARLY_BIRD_YEARLY_URL;
-const API_URL                = import.meta.env.VITE_API_URL;
+// Phone URLs (embed=1 → LemonSqueezy overlay)
+const MONTHLY_PHONE_URL            = import.meta.env.VITE_MONTHLY_PHONE_URL            || MONTHLY_URL;
+const YEARLY_PHONE_URL             = import.meta.env.VITE_YEARLY_PHONE_URL             || YEARLY_URL;
+const EARLY_BIRD_MONTHLY_PHONE_URL = import.meta.env.VITE_EARLY_BIRD_MONTHLY_PHONE_URL || EARLY_BIRD_MONTHLY_URL;
+const EARLY_BIRD_YEARLY_PHONE_URL  = import.meta.env.VITE_EARLY_BIRD_YEARLY_PHONE_URL  || EARLY_BIRD_YEARLY_URL;
+const API_URL                      = import.meta.env.VITE_API_URL;
+
+const isMobileDevice = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+const openCheckout = (url) => {
+  if (isMobileDevice() && window.LemonSqueezy?.Url?.Open) {
+    window.LemonSqueezy.Url.Open(url);
+  } else {
+    window.open(url);
+  }
+};
 
 const PayModal = ({ styles, isLight, t, onClose }) => {
   const [plan, setPlan] = useState('monthly');
@@ -98,10 +114,15 @@ const PayModal = ({ styles, isLight, t, onClose }) => {
         )}
         <button
           onClick={() => {
+            const mobile = isMobileDevice();
             const url = earlyBird.active
-              ? (isYearly ? EARLY_BIRD_YEARLY_URL : EARLY_BIRD_MONTHLY_URL)
-              : (isYearly ? YEARLY_URL : MONTHLY_URL);
-            window.open(url);
+              ? (isYearly
+                  ? (mobile ? EARLY_BIRD_YEARLY_PHONE_URL  : EARLY_BIRD_YEARLY_URL)
+                  : (mobile ? EARLY_BIRD_MONTHLY_PHONE_URL : EARLY_BIRD_MONTHLY_URL))
+              : (isYearly
+                  ? (mobile ? YEARLY_PHONE_URL  : YEARLY_URL)
+                  : (mobile ? MONTHLY_PHONE_URL : MONTHLY_URL));
+            openCheckout(url);
             onClose();
           }}
           style={{ width: '100%', padding: '15px', backgroundColor: earlyBird.active ? '#f97316' : styles.accent, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', boxShadow: earlyBird.active ? '0 4px 15px rgba(249,115,22,0.4)' : `0 4px 15px ${styles.accent}40` }}
