@@ -498,7 +498,7 @@ function App() {
 
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
-    recognition.lang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : 'en-US';
+    recognition.lang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : lang === 'ko' ? 'ko-KR' : 'en-US';
     recognition.interimResults = false;
     recognition.continuous = false;
 
@@ -520,7 +520,7 @@ function App() {
   const handleSpeak = (text, index) => {
     if (speakingIndex !== null) { window.speechSynthesis.cancel(); setSpeakingIndex(null); if (speakingIndex === index) return; }
     const utterance = new SpeechSynthesisUtterance(text.replace(/[*#【】\[\]]/g, ''));
-    const targetLang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : 'en-US';
+    const targetLang = lang === 'zh-TW' ? 'zh-TW' : lang === 'ja' ? 'ja-JP' : lang === 'ko' ? 'ko-KR' : 'en-US';
     utterance.lang = targetLang;
     utterance.rate = 0.92;
     utterance.pitch = 1.05;
@@ -532,13 +532,15 @@ function App() {
         ? ['Mei-Jia', 'Meijia', 'Ting-Ting', 'Tingting']
         : lang === 'ja'
         ? ['Kyoko', 'Otoya', 'O-ren']
+        : lang === 'ko'
+        ? ['Yuna', 'Sora', 'Nari']
         : ['Samantha', 'Karen', 'Moira', 'Serena', 'Daniel', 'Alex'];
       let best = null;
       for (const name of preferred) {
         best = voices.find(v => v.name.includes(name));
         if (best) break;
       }
-      if (!best) best = voices.find(v => v.lang === targetLang && v.localService) || voices.find(v => v.lang.startsWith(lang === 'zh-TW' ? 'zh' : lang === 'ja' ? 'ja' : 'en'));
+      if (!best) best = voices.find(v => v.lang === targetLang && v.localService) || voices.find(v => v.lang.startsWith(lang === 'zh-TW' ? 'zh' : lang === 'ja' ? 'ja' : lang === 'ko' ? 'ko' : 'en'));
       if (best) utterance.voice = best;
     };
 
